@@ -19,3 +19,4 @@ tests_test_base64_CFLAGS = -DBASE64_TEST
 
 test: $(noinst_PROGRAMS)
 	(cd tests ; ./test_asn1)
+	(cd tests ; ./test_base64)

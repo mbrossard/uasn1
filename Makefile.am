@@ -11,3 +11,6 @@ noinst_PROGRAMS = tests/test_asn1
 
 tests_test_asn1_SOURCES = tests/test_asn1.c
 tests_test_asn1_LDADD = libuasn1.a
+
+test:
+	(cd tests ; ./test_asn1)

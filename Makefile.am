@@ -4,6 +4,7 @@ AM_CFLAGS = ${my_CFLAGS} \
 noinst_LIBRARIES = libuasn1.a
 
 libuasn1_a_SOURCES = src/uasn1.c \
+	src/base64.c \
 	src/encode.c \
 	src/decode.c
 

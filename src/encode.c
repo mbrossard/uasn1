@@ -234,8 +234,16 @@ int uasn1_integer_encode(uasn1_item_t *integer,
 int uasn1_encode(uasn1_item_t *element,
                  uasn1_buffer_t *buffer)
 {
-    int rv = 0;
+    int rv = 0, i;
     unsigned length = uasn1_item_length(element);
+    int indefinite = 0;
+
+    if((((element->tag.type == uasn1_sequence_type) ||
+         (element->tag.type == uasn1_set_type))) &&
+       (element->tag.flags == uasn1_indefinite_type)) {
+        indefinite = 2;
+    }
+
 
     /* Special case for pre-encoded elements */
     if(element->tag.flags == uasn1_preencoded_type) {
@@ -254,14 +262,23 @@ int uasn1_encode(uasn1_item_t *element,
             uasn1_buffer_put(buffer, (element->tag._class |
                                       element->tag.value |
                                       uasn1_constructed_tag ) & 0xFF );
-            uasn1_encode_length(length + uasn1_length_length(length) + 1, buffer);
+            if(indefinite) {
+                uasn1_buffer_put(buffer, 0x80);
+                indefinite += 2;
+            } else{
+                uasn1_encode_length(length + uasn1_length_length(length) + 1, buffer);
+            }
         }
         uasn1_buffer_put(buffer, (element->tag.type |
                                   element->tag.construct) & 0xFF );
     }
 
     /* Length encoding */
-    uasn1_encode_length(length, buffer);
+    if(indefinite) {
+        uasn1_buffer_put(buffer, 0x80);
+    } else {
+        uasn1_encode_length(length, buffer);
+    }
 
     /* Value encoding */
     if((element->tag.type == uasn1_end_of_content) ||
@@ -291,6 +308,11 @@ int uasn1_encode(uasn1_item_t *element,
                                element->value.string.string,
                                element->value.string.size);
     }
+
+    for(i = 0; i < indefinite; i++) {
+        uasn1_buffer_put(buffer, 0x00);
+    }
+
     return rv;
 }
 

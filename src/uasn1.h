@@ -126,7 +126,9 @@ typedef enum {
     /** Choice Type */
 	uasn1_choice_type              = 0x02,
     /** Optionnal Type */
-	uasn1_optional_type            = 0x04
+	uasn1_optional_type            = 0x04,
+    /** Optionnal Type */
+	uasn1_indefinite_type          = 0x08
 } uasn1_flags_t;
 
 /**
@@ -154,7 +156,7 @@ typedef struct {
     uasn1_tagging_class_t tag;
     /** value of the tag */
     unsigned char value;
-    /** flags : Preencoded, Choice, Optional */
+    /** flags : Preencoded, Choice, Optional, Indefinite */
     uasn1_flags_t flags;
 } uasn1_tag_t;
 #else
@@ -353,6 +355,13 @@ inline static void uasn1_add_tagged(uasn1_item_t *list,
         uasn1_set_tag(element, tag, value, tagging);
         uasn1_add(list, element);
     }
+}
+
+inline static uasn1_item_t *uasn1_set_flags(uasn1_item_t *element,
+                                            uasn1_flags_t flags)
+{
+    element->tag.flags |= flags;
+    return element;
 }
 
 /**

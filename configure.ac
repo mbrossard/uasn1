@@ -33,3 +33,20 @@ fi
 AC_CONFIG_FILES([Makefile])
 AC_CACHE_SAVE
 AC_OUTPUT
+
+AC_MSG_RESULT([
+        $PACKAGE $VERSION
+        =====
+
+        prefix:                 ${prefix}
+        sysconfdir:             ${sysconfdir}
+        libdir:                 ${libdir}
+        includedir:             ${includedir}
+
+        compiler:               ${CC}
+        cflags:                 ${CFLAGS}
+        ldflags:                ${LDFLAGS}
+        libs:                   ${LIBS}
+
+        openssl binary:         ${OPENSSL_BIN}
+])

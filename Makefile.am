@@ -5,8 +5,9 @@ noinst_LIBRARIES = libuasn1.a
 
 libuasn1_a_SOURCES = src/uasn1.c \
 	src/base64.c \
+	src/decode.c \
 	src/encode.c \
-	src/decode.c
+	src/x509.c
 
 noinst_PROGRAMS = tests/test_asn1 \
 	tests/test_base64

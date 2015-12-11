@@ -8,6 +8,17 @@
 #include "uasn1.h"
 #include "x509.h"
 
+uasn1_item_t *uasn1_pki_sha1_rsa_algo()
+{
+    uasn1_item_t *algoid = uasn1_sequence_new(2);
+    unsigned int sha1withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 5 };
+
+    /* building Signature OID */
+    uasn1_add(algoid, uasn1_oid_new(sha1withRSAEncryption, 7));
+    uasn1_add(algoid, uasn1_item_new(uasn1_null_type));
+    return algoid;
+}
+
 uasn1_item_t *uasn1_x509_tbs_new(int version,
                                  uasn1_item_t *serial,
                                  uasn1_item_t *issuer,

@@ -15,6 +15,8 @@ uasn1_item_t *uasn1_x509_get_subject(uasn1_item_t *tbs);
 uasn1_item_t *uasn1_x509_get_pubkey(uasn1_item_t *tbs);
 uasn1_item_t *uasn1_x509_get_pubkey_value(uasn1_item_t *tbs);
 
+uasn1_item_t *uasn1_pki_sha1_rsa_algo();
+
 /**
  *  AlgorithmIdentifier ::= SEQUENCE {
  *      algorithm  OBJECT IDENTIFIER,

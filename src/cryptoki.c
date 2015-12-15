@@ -5,6 +5,7 @@
 #include "config.h"
 #include "cryptoki.h"
 
+#include <stdio.h>
 #include <string.h>
 #include <memory.h>
 

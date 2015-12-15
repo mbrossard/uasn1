@@ -6,7 +6,6 @@
  */
 
 #include "uasn1.h"
-#include "sign.h"
 
 typedef enum {
 	unspecified          = 0,

@@ -4,10 +4,8 @@
 
 #include <string.h>
 
-#include "uasn1.h"
-#include "utils.h"
-#include "x509.h"
 #include "crl.h"
+#include "x509.h"
 
 uasn1_item_t *uasn1_crl_tbs_new(uasn1_item_t *signature,
                                 uasn1_item_t *issuer,

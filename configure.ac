@@ -21,6 +21,31 @@ AC_SUBST([VERSION_INFO])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_PROG_RANLIB
+if test x"$pkcs11_module" == x""; then
+   AC_PATH_PROG([PKG_CONFIG], [pkg-config])
+   if test x"$PKG_CONFIG" != x""; then
+       NSS_LIBDIR=`$PKG_CONFIG nss --variable=libdir 2>/dev/null`
+       if test x"NSS_LIBDIR" != x""; then
+           if test `uname` == "Darwin" ; then
+              NSS_LIBNAME="libsoftokn3.dylib" ;
+           else
+              NSS_LIBNAME="libsoftokn3.so" ;
+              if test ! -f "$NSS_LIBDIR/$NSS_LIBNAME" -a -f "$NSS_LIBDIR/nss/$NSS_LIBNAME" ; then
+                  NSS_LIBNAME="nss/$NSS_LIBNAME" ;
+              fi
+           fi
+           pkcs11_module="$NSS_LIBDIR/$NSS_LIBNAME"
+       fi
+       if test ! -f "$pkcs11_module" ; then
+           if test `uname` == "Darwin" ; then
+              pkcs11_module=`ls -1 /usr/local/Cellar/nss/*/lib/libsoftokn3.dylib | sort | tail -1` ;
+           else
+              pkcs11_module=`ls -1 /usr/lib*/*/nss/libsoftokn3.so | sort | tail -1` ;
+           fi
+       fi
+   fi
+fi
+
 
 AX_CHECK_OPENSSL
 CFLAGS="${CFLAGS} ${OPENSSL_INCLUDES}"

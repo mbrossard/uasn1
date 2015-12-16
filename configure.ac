@@ -23,6 +23,12 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PROG_RANLIB
 AC_CHECK_LIB(dl, dlsym)
 
+AC_ARG_WITH(
+        [pkcs11-module],
+        [AS_HELP_STRING([--with-pkcs11-module], [Default PKCS#11 module])],
+        [pkcs11_module="${withval}"]
+)
+
 if test x"$pkcs11_module" == x""; then
    AC_PATH_PROG([PKG_CONFIG], [pkg-config])
    if test x"$PKG_CONFIG" != x""; then

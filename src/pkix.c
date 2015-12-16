@@ -4,12 +4,8 @@
 
 #include <string.h>
 
-#include "uasn1.h"
-#include "utils.h"
-#include "sign.h"
-#include "oids.h"
-#include "x509.h"
 #include "pkix.h"
+#include "x509.h"
 
 void uasn1_x509_add_key_usage(uasn1_item_t *extensions,
                               unsigned char critical,

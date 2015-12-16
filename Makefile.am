@@ -9,6 +9,7 @@ libuasn1_a_SOURCES = src/uasn1.c \
 	src/cryptoki.c \
 	src/decode.c \
 	src/encode.c \
+	src/key.c \
 	src/x509.c
 
 noinst_PROGRAMS = tests/test_asn1 \

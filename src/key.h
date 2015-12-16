@@ -26,10 +26,10 @@ typedef struct {
 typedef struct _uasn1_key_t {
 	uasn1_crypto_provider_t provider;
 	union {
+		pkcs11_key_t pkcs11;
 #ifdef HAVE_OPENSSL
 		EVP_PKEY *openssl;
 #endif
-        pkcs11_key_t pkcs11;
 	};
 } uasn1_key_t;
 

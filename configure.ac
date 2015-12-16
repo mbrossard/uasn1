@@ -21,6 +21,8 @@ AC_SUBST([VERSION_INFO])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_PROG_RANLIB
+AC_CHECK_LIB(dl, dlsym)
+
 if test x"$pkcs11_module" == x""; then
    AC_PATH_PROG([PKG_CONFIG], [pkg-config])
    if test x"$PKG_CONFIG" != x""; then

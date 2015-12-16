@@ -79,5 +79,6 @@ AC_MSG_RESULT([
         ldflags:                ${LDFLAGS}
         libs:                   ${LIBS}
 
+        pkcs11_module:          ${pkcs11_module}
         openssl binary:         ${OPENSSL_BIN}
 ])

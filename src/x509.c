@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "uasn1.h"
+#include "oids.h"
 #include "x509.h"
 
 uasn1_item_t *uasn1_pki_sha1_rsa_algo()

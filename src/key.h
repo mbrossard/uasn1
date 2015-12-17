@@ -23,6 +23,7 @@ typedef struct {
     CK_OBJECT_CLASS class;
 } pkcs11_key_t;
 
+typedef struct _uasn1_key_t {
 	uasn1_crypto_provider_t provider;
 	union {
 		pkcs11_key_t pkcs11;
@@ -30,6 +31,6 @@ typedef struct {
 		EVP_PKEY *openssl;
 #endif
 	};
-};
+} _uasn1_key_t;
 
 #endif

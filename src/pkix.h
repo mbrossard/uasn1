@@ -91,7 +91,7 @@ void uasn1_x509_add_basic_constraints(uasn1_item_t *extensions,
                                       unsigned char ca,
                                       unsigned char pathLen,
                                       unsigned int length);
-
+/*
 void uasn1_x509_add_ski(uasn1_item_t *extensions,
                         unsigned char critical,
                         uasn1_item_t *key);
@@ -99,6 +99,7 @@ void uasn1_x509_add_ski(uasn1_item_t *extensions,
 void uasn1_x509_add_aki(uasn1_item_t *extensions,
                         unsigned char critical,
                         uasn1_item_t *key);
+*/
 
 /**
  *  cRLDistributionPoints ::= { CRLDistPointsSyntax }

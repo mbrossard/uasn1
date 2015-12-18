@@ -114,6 +114,7 @@ void uasn1_x509_add_basic_constraints(uasn1_item_t *extensions,
     uasn1_free(basicConstraints);
 }
 
+/*
 void uasn1_x509_add_ski(uasn1_item_t *extensions,
                         unsigned char critical,
                         uasn1_item_t *key)
@@ -133,6 +134,7 @@ void uasn1_x509_add_aki(uasn1_item_t *extensions,
                              critical, key_sha1);
     uasn1_free(key_sha1);
 }
+*/
 
 uasn1_x509_sda_t sdadb[] = {
     { "dateOfBirth",          uasn1_generalized_time_type },

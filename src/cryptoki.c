@@ -573,6 +573,11 @@ CK_RV pkcs11_generate_key_pair(CK_FUNCTION_LIST_PTR funcs,
         }
     }
 
+    if(rc == CKR_OK) {
+        rc = pkcs11_set_key_id(funcs, session, hPublicKey,
+                               hPrivateKey, attrs, label);
+    }
+
  done:
     free(attrs[0].pValue);
     free(attrs[1].pValue);

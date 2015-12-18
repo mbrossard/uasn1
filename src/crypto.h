@@ -33,6 +33,8 @@ uasn1_key_t *uasn1_load_pkcs11_key(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
 
 uasn1_item_t *uasn1_key_get_asn1_public_key(uasn1_key_t *key);
 
+uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest);
+
 int uasn1_x509_sign_new(uasn1_item_t *tbs,
                         uasn1_key_t *key,
                         uasn1_digest_t digest,

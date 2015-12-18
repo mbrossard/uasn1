@@ -22,6 +22,7 @@ uasn1_item_t *uasn1_pki_sha1_rsa_algo()
 
 uasn1_item_t *uasn1_x509_tbs_new(int version,
                                  uasn1_item_t *serial,
+                                 uasn1_item_t *algoid,
                                  uasn1_item_t *issuer,
                                  uasn1_item_t *notBefore,
                                  uasn1_item_t *notAfter,
@@ -33,7 +34,6 @@ uasn1_item_t *uasn1_x509_tbs_new(int version,
 {
     uasn1_item_t *seq = uasn1_sequence_new(8);
     uasn1_item_t *validity = uasn1_sequence_new(2);
-    uasn1_item_t *algoid = uasn1_pki_sha1_rsa_algo();
 
     /* Building algorithm ID */
     uasn1_add(validity, notBefore);

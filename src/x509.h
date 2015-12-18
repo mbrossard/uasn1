@@ -83,6 +83,7 @@ uasn1_item_t *uasn1_pki_sha1_rsa_algo();
  */
 uasn1_item_t *uasn1_x509_tbs_new(int version,
                                  uasn1_item_t *serial,
+                                 uasn1_item_t *algoid,
                                  uasn1_item_t *issuer,
                                  uasn1_item_t *notBefore,
                                  uasn1_item_t *notAfter,

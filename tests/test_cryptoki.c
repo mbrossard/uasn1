@@ -44,6 +44,7 @@ int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, 
     tbs = uasn1_x509_tbs_new
         (2,
          uasn1_integer_new(0x1),
+         uasn1_x509_algorithm(public, digest),
          dn,
          uasn1_utc_time_new(notBefore, strlen(notBefore)),
          uasn1_utc_time_new(notAfter, strlen(notAfter)),

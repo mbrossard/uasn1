@@ -16,8 +16,8 @@ libuasn1_a_SOURCES = src/uasn1.c \
 	src/x509.c
 
 noinst_PROGRAMS = tests/test_asn1 \
-	tests/test_base64
-	tests/test_cryptoki \
+	tests/test_base64 \
+	tests/test_cryptoki
 
 tests_test_asn1_SOURCES = tests/test_asn1.c
 tests_test_asn1_LDADD = libuasn1.a

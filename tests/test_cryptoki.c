@@ -49,7 +49,7 @@ int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, 
          uasn1_utc_time_new(notBefore, strlen(notBefore)),
          uasn1_utc_time_new(notAfter, strlen(notAfter)),
          dn,
-         newASN1PublicKeyInfo(public_key),
+         uasn1_key_get_asn1_public_key_info(public),
          NULL,
          NULL,
          extensions);

@@ -62,6 +62,10 @@ CK_RV pkcs11_get_slots(CK_FUNCTION_LIST_PTR funcs,
                        CK_ULONG_PTR nslots);
 CK_RV pkcs11_check_slot(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot);
 
+CK_RV pkcs11_init_token(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
+                        CK_UTF8CHAR_PTR label, CK_UTF8CHAR_PTR pin,
+                        CK_ULONG pin_len);
+
 CK_RV pkcs11_find_object(CK_FUNCTION_LIST_PTR funcs,
                          CK_SESSION_HANDLE h_session,
                          CK_ATTRIBUTE_PTR search, CK_ULONG length,
@@ -73,6 +77,13 @@ CK_RV pkcs11_login_session(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
                            CK_UTF8CHAR_PTR pin, CK_ULONG pinLen);
 void pkcs11_fill_attribute(CK_ATTRIBUTE *attr, CK_ATTRIBUTE_TYPE type,
                            CK_VOID_PTR pvoid, CK_ULONG ulong);
+
+CK_RV pkcs11_generate_key_pair(CK_FUNCTION_LIST_PTR funcs,
+                               CK_SESSION_HANDLE session,
+                               CK_KEY_TYPE type, CK_ULONG size,
+                               CK_BYTE_PTR label,
+                               CK_OBJECT_HANDLE_PTR hPub,
+                               CK_OBJECT_HANDLE_PTR hPrv);
 
 CK_RV pkcs11_load_init(const char *module, const char *path,
                        CK_FUNCTION_LIST_PTR *funcs);

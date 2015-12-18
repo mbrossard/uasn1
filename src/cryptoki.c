@@ -238,6 +238,43 @@ CK_RV pkcs11_check_slot(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot)
     return rc;
 }
 
+CK_RV pkcs11_init_token(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
+                        CK_UTF8CHAR_PTR label, CK_UTF8CHAR_PTR pin,
+                        CK_ULONG pin_len)
+{
+    CK_SESSION_HANDLE h_session;
+    CK_RV             rc;
+
+    rc = funcs->C_InitToken(slot, NULL, 0, label);
+    if (rc != CKR_OK) {
+        return rc;
+    }
+
+    rc = funcs->C_OpenSession(slot, CKF_SERIAL_SESSION | CKF_RW_SESSION,
+                              NULL_PTR, NULL_PTR, &h_session);
+    if (rc != CKR_OK) {
+        return rc;
+    }
+
+    rc = funcs->C_Login(h_session, CKU_SO, NULL, 0);
+    if (rc != CKR_OK) {
+        return rc;
+    }
+
+    rc = funcs->C_InitPIN(h_session, pin, pin_len);
+    if (rc != CKR_OK) {
+        return rc;
+    }
+
+    rc = funcs->C_Logout(h_session);
+    if (rc != CKR_OK) {
+        return rc;
+    }
+
+    rc = funcs->C_CloseSession(h_session);
+    return rc;
+}
+
 CK_RV pkcs11_find_object(CK_FUNCTION_LIST_PTR funcs,
                          CK_SESSION_HANDLE h_session,
                          CK_ATTRIBUTE_PTR search, CK_ULONG length,
@@ -362,6 +399,160 @@ CK_RV pkcs11_close(CK_FUNCTION_LIST_PTR funcs,
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {
         return rc;
+    }
+
+    return rc;
+}
+
+
+CK_RV pkcs11_generate_key_pair(CK_FUNCTION_LIST_PTR funcs,
+                               CK_SESSION_HANDLE session,
+                               CK_KEY_TYPE type, CK_ULONG size,
+                               CK_BYTE_PTR label,
+                               CK_OBJECT_HANDLE_PTR hPub,
+                               CK_OBJECT_HANDLE_PTR hPrv)
+{
+    CK_RV rc = CKR_HOST_MEMORY;
+    CK_OBJECT_HANDLE hPublicKey, hPrivateKey;
+    CK_BBOOL t = TRUE;
+    CK_OBJECT_CLASS	prv = CKO_PRIVATE_KEY;
+    CK_OBJECT_CLASS pub = CKO_PUBLIC_KEY;
+    CK_ATTRIBUTE attrs[2] = {
+        { 0, NULL, 0},
+        { 0, NULL, 0},
+    };
+
+	if(!funcs) {
+        return rc;
+    }
+
+    if(type == CKK_RSA) {
+        CK_MECHANISM mechanism = { CKM_RSA_PKCS_KEY_PAIR_GEN, NULL_PTR, 0 };
+        CK_BYTE exponent[3] = { 0x01, 0x00, 0x01 };
+        CK_ATTRIBUTE publicKeyTemplate[8] = {
+            { CKA_CLASS ,          &pub,      sizeof(pub)      },
+            { CKA_KEY_TYPE,        &type,     sizeof(type)     },
+            { CKA_TOKEN,           &t,        sizeof(CK_BBOOL) },
+            { CKA_ENCRYPT,         &t,        sizeof(CK_BBOOL) },
+            { CKA_VERIFY,          &t,        sizeof(CK_BBOOL) },
+            { CKA_WRAP,            &t,        sizeof(CK_BBOOL) },
+            { CKA_MODULUS_BITS,    &size,     sizeof(size)     },
+            { CKA_PUBLIC_EXPONENT, &exponent, sizeof(exponent) },
+        };
+        CK_ATTRIBUTE privateKeyTemplate[8] = {
+            { CKA_CLASS,      &prv,       sizeof(prv)       },
+            { CKA_KEY_TYPE,   &type,      sizeof(type)      },
+            { CKA_TOKEN,      &t,         sizeof(CK_BBOOL)  },
+            { CKA_PRIVATE,    &t,         sizeof(CK_BBOOL)  },
+            { CKA_SENSITIVE,  &t,         sizeof(CK_BBOOL)  },
+            { CKA_DECRYPT,    &t,         sizeof(CK_BBOOL)  },
+            { CKA_SIGN,       &t,         sizeof(CK_BBOOL)  },
+            { CKA_UNWRAP,     &t,         sizeof(CK_BBOOL)  },
+        };
+
+        if((rc = funcs->C_GenerateKeyPair
+            (session, &mechanism, publicKeyTemplate, 8,
+             privateKeyTemplate, 8, &hPublicKey, &hPrivateKey)) != CKR_OK) {
+            goto done;
+        }
+
+        if((hPublicKey  == CK_INVALID_HANDLE) ||
+           (hPrivateKey == CK_INVALID_HANDLE)) {
+            rc = CKR_HOST_MEMORY; /* */
+            goto done;
+        }
+
+        pkcs11_fill_attribute(&attrs[0], CKA_PUBLIC_EXPONENT, NULL, 0);
+        pkcs11_fill_attribute(&attrs[1], CKA_MODULUS,         NULL, 0);
+
+        if ((rc = funcs->C_GetAttributeValue
+             (session, hPublicKey, attrs, 2)) != CKR_OK) {
+            goto done;
+        }
+
+        if (((attrs[0].pValue = malloc(attrs[0].ulValueLen)) == NULL) ||
+            ((attrs[1].pValue = malloc(attrs[1].ulValueLen)) == NULL)) {
+            rc = CKR_HOST_MEMORY;
+            goto done;
+        }
+
+        if ((rc = funcs->C_GetAttributeValue
+             (session, hPublicKey, attrs, 2)) != CKR_OK) {
+            goto done;
+        }
+    } else if(type == CKK_EC) {
+        CK_MECHANISM mechanism = { CKM_EC_KEY_PAIR_GEN, NULL_PTR, 0 };
+        CK_ATTRIBUTE pubTemplate[2] = {
+            { CKA_EC_PARAMS,  NULL, 0                 },
+            { CKA_TOKEN,      &t,   sizeof(CK_BBOOL)  }
+        };
+        CK_ATTRIBUTE privTemplate[4] = {
+            { CKA_TOKEN,      &t,   sizeof(CK_BBOOL)  },
+            { CKA_PRIVATE,    &t,   sizeof(CK_BBOOL)  },
+            { CKA_SENSITIVE,  &t,   sizeof(CK_BBOOL)  },
+            { CKA_SIGN,       &t,   sizeof(CK_BBOOL)  }
+        };
+
+        switch(size) {
+            case 256:
+                privTemplate[0].pValue = prime256v1_oid;
+                privTemplate[0].ulValueLen = sizeof(prime256v1_oid);
+                break;
+            case 384:
+                privTemplate[0].pValue = secp384r1_oid;
+                privTemplate[0].ulValueLen = sizeof(secp384r1_oid);
+                break;
+            case 521:
+                privTemplate[0].pValue = secp521r1_oid;
+                privTemplate[0].ulValueLen = sizeof(secp521r1_oid);
+                break;
+            default:
+                return CKR_DOMAIN_PARAMS_INVALID;
+        }
+
+        pubTemplate[0].pValue = privTemplate[0].pValue;
+        pubTemplate[0].ulValueLen = privTemplate[0].ulValueLen;
+
+        if((rc = funcs->C_GenerateKeyPair
+            (session, &mechanism, pubTemplate, 2,
+             privTemplate, 4, &hPublicKey, &hPrivateKey)) != CKR_OK) {
+            goto done;
+        }
+
+        if((hPublicKey  == CK_INVALID_HANDLE) ||
+           (hPrivateKey == CK_INVALID_HANDLE)) {
+            rc = CKR_HOST_MEMORY; /* Maybe there's something clearer */
+            goto done;
+        }
+
+        pkcs11_fill_attribute(&attrs[0], CKA_EC_POINT, NULL, 0);
+        if ((rc = funcs->C_GetAttributeValue
+             (session, hPublicKey, attrs, 1)) != CKR_OK) {
+            goto done;
+        }
+
+        if (((attrs[0].pValue = malloc(attrs[0].ulValueLen)) == NULL)) {
+            rc = CKR_HOST_MEMORY;
+            goto done;
+        }
+
+        if ((rc = funcs->C_GetAttributeValue
+             (session, hPublicKey, attrs, 1)) != CKR_OK) {
+            goto done;
+        }
+    }
+
+ done:
+    free(attrs[0].pValue);
+    free(attrs[1].pValue);
+
+    if(rc == CKR_OK) {
+        if(hPub) {
+            *hPub = hPublicKey;
+        }
+        if(hPrv) {
+            *hPrv = hPrivateKey;
+        }
     }
 
     return rc;

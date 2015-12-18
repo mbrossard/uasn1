@@ -78,6 +78,10 @@ CK_RV pkcs11_login_session(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
 void pkcs11_fill_attribute(CK_ATTRIBUTE *attr, CK_ATTRIBUTE_TYPE type,
                            CK_VOID_PTR pvoid, CK_ULONG ulong);
 
+CK_RV pkcs11_set_key_id(CK_FUNCTION_LIST_PTR funcs, CK_SESSION_HANDLE session,
+                        CK_OBJECT_HANDLE hPublicKey, CK_OBJECT_HANDLE hPrivateKey,
+                        CK_ATTRIBUTE_PTR attrs, CK_BYTE_PTR label);
+
 CK_RV pkcs11_generate_key_pair(CK_FUNCTION_LIST_PTR funcs,
                                CK_SESSION_HANDLE session,
                                CK_KEY_TYPE type, CK_ULONG size,

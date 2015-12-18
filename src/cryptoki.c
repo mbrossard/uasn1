@@ -405,6 +405,37 @@ CK_RV pkcs11_close(CK_FUNCTION_LIST_PTR funcs,
 }
 
 
+CK_RV pkcs11_set_key_id(CK_FUNCTION_LIST_PTR funcs, CK_SESSION_HANDLE session,
+                        CK_OBJECT_HANDLE hPublicKey, CK_OBJECT_HANDLE hPrivateKey,
+                        CK_ATTRIBUTE_PTR attrs, CK_BYTE_PTR label)
+{
+	CK_RV rc = CKR_HOST_MEMORY;
+    CK_ATTRIBUTE kid[2];
+    int i = 0;
+
+    CK_BYTE buf[20];
+    CK_ULONG len = sizeof(buf);
+    CK_MECHANISM mechanism = { CKM_SHA_1, NULL_PTR, 0 };
+    
+    rc = funcs->C_DigestInit(session, &mechanism);
+    if (rc != CKR_OK) {
+        return rc;
+    }
+    rc = funcs->C_Digest(session, attrs[0].pValue, attrs[0].ulValueLen, buf, &len);
+
+    if(label) {
+        pkcs11_fill_attribute(&(kid[i++]), CKA_LABEL,
+                              label, strlen((char *)label));
+    }
+
+    rc = funcs->C_SetAttributeValue(session, hPrivateKey, kid, i);
+    if (rc == CKR_OK) {
+        rc = funcs->C_SetAttributeValue(session, hPublicKey , kid, i);
+    }
+
+	return rc;
+}
+
 CK_RV pkcs11_generate_key_pair(CK_FUNCTION_LIST_PTR funcs,
                                CK_SESSION_HANDLE session,
                                CK_KEY_TYPE type, CK_ULONG size,

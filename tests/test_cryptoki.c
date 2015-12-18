@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int x509_test(uasn1_key_t *private, uasn1_key_t *public)
+int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, char *name)
 {
     uasn1_buffer_t *buffer = uasn1_buffer_new(64);
     uasn1_item_t *dn = uasn1_sequence_new(2);
@@ -20,6 +20,7 @@ int x509_test(uasn1_key_t *private, uasn1_key_t *public)
     uasn1_item_t *tbs, *public_key;
     unsigned int keyUsage = keyCertSign | cRLSign;
     FILE *f = NULL;
+    char fname[64];
 
     char *notBefore = "150101080001Z";
     char *notAfter =  "160101080001Z";
@@ -52,11 +53,13 @@ int x509_test(uasn1_key_t *private, uasn1_key_t *public)
          NULL,
          extensions);
  
-    uasn1_x509_sign_new(tbs, private, UASN1_SHA1, buffer);
+    uasn1_x509_sign_new(tbs, private, digest, buffer);
 
-    uasn1_write_buffer(buffer, "test.der");
+    sprintf(fname, "%s.der", name);
+    uasn1_write_buffer(buffer, fname);
 
-    f = fopen("test.pem", "w");
+    sprintf(fname, "%s.pem", name);
+    f = fopen(fname, "w");
     fprintf(f, "-----BEGIN CERTIFICATE-----\n");
     uasn1_write_base64_buffer(buffer, f);
     fprintf(f, "-----END CERTIFICATE-----\n");
@@ -132,7 +135,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    x509_test(rsa_prv, rsa_pub);
+    x509_test(rsa_prv, rsa_pub, UASN1_SHA1, "rsa_crt");
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

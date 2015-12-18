@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = ${my_CFLAGS} \
 	-I$(srcdir)/src
 

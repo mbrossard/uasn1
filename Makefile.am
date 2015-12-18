@@ -30,6 +30,6 @@ tests_test_base64_CFLAGS = -DBASE64_TEST
 tests_test_cryptoki_SOURCES = tests/test_cryptoki.c
 tests_test_cryptoki_LDADD = libuasn1.a
 
-test: clean-local $(noinst_PROGRAMS)
+test: $(noinst_PROGRAMS)
 	(cd tests ; ./test_asn1)
 	(cd tests ; ./test_base64)

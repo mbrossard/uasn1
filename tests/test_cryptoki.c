@@ -137,6 +137,7 @@ int main(int argc, char **argv)
     }
 
     x509_test(rsa_prv, rsa_pub, UASN1_SHA1, "rsa_crt");
+    x509_test(ec_prv, ec_pub, UASN1_SHA256, "ec_crt");
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

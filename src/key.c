@@ -196,10 +196,25 @@ uasn1_item_t *uasn1_key_get_asn1_public_key_info(uasn1_key_t *key)
 
 uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
-    CK_MECHANISM mechanism = { CKM_SHA_1, NULL_PTR, 0 };
+    CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
     CK_BYTE hash[64], signature[1024];
     CK_ULONG hlen = sizeof(hash), slen = sizeof(signature);
     CK_RV rc;
+
+    switch (digest) {
+        case UASN1_SHA1:
+            mechanism.mechanism = CKM_SHA_1;
+            break;
+        case UASN1_SHA256:
+            mechanism.mechanism = CKM_SHA256;
+            break;
+        case UASN1_SHA384:
+            mechanism.mechanism = CKM_SHA384;
+            break;
+        case UASN1_SHA512:
+            mechanism.mechanism = CKM_SHA512;
+            break;
+    }
 
     rc = key->pkcs11.functions->C_DigestInit(key->pkcs11.session, &mechanism);
     if (rc != CKR_OK) {

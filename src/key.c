@@ -199,6 +199,7 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
     CK_BYTE hash[64], signature[1024];
     CK_ULONG hlen = sizeof(hash), slen = sizeof(signature);
+    uasn1_item_t *sig;
     CK_RV rc;
 
     switch (digest) {
@@ -226,7 +227,11 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
         return NULL;
     }
 
-    mechanism.mechanism = CKM_RSA_PKCS;
+    if (key->pkcs11.type == CKK_RSA) {
+        mechanism.mechanism = CKM_RSA_PKCS;
+    } else if (key->pkcs11.type == CKK_EC) {
+        mechanism.mechanism = CKM_ECDSA;
+    }
 
     rc = key->pkcs11.functions->C_SignInit(key->pkcs11.session, &mechanism, key->pkcs11.object);
     if (rc != CKR_OK) {
@@ -238,7 +243,20 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
         return NULL;
     }
 
-    return uasn1_bit_string_new(signature, slen, 0);
+    if (key->pkcs11.type == CKK_RSA) {
+        sig  = uasn1_bit_string_new(signature, slen, 0);
+    } else if (key->pkcs11.type == CKK_EC) {
+        uasn1_buffer_t *buf = uasn1_buffer_new(256);
+        uasn1_item_t *ec_sig = uasn1_sequence_new(2);
+        uasn1_add(ec_sig, uasn1_large_integer_new(uasn1_integer_type, signature, slen / 2));
+        uasn1_add(ec_sig, uasn1_large_integer_new(uasn1_integer_type, signature + slen /2, slen / 2));
+        uasn1_encode(ec_sig, buf);
+        sig = uasn1_bit_string_new(buf->buffer, buf->current, 0);
+        uasn1_buffer_free(buf);
+        uasn1_free(ec_sig);
+    }
+
+    return sig;
 }
 
 

@@ -292,6 +292,9 @@ uasn1_item_t *uasn1_natural_new(uasn1_type_t type, int i);
 #define uasn1_enumerated_new(i) \
     uasn1_natural_new(uasn1_enumerated_type, i)
 
+/** Creates a new uasn1_item_t of integer type */
+uasn1_item_t *uasn1_large_integer_new(uasn1_type_t type, void *string, size_t size);
+
 /** Creates a new boolean uasn1_item_t element */
 inline static uasn1_item_t *uasn1_boolean_new(uasn1_boolean_t b)
 {

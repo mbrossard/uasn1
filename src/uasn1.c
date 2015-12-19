@@ -41,6 +41,28 @@ uasn1_item_t *uasn1_string_new(uasn1_type_t type, void *string,
     return element;
 }
 
+uasn1_item_t *uasn1_large_integer_new(uasn1_type_t type, void *string,
+                                      size_t size)
+{
+    uasn1_item_t *element = uasn1_item_new(type);
+    if(element) {
+        /* Do we need to add a leading zero */
+        int lead = ((char *)string)[0] & 0x80 ? 1 : 0;
+        element->value.string.string = (unsigned char *)malloc(size + lead);
+        if(element->value.string.string) {
+            /* Check for consistence here */
+            element->value.string.string[0] = 0;
+            memcpy(element->value.string.string + lead, string, size);
+            element->value.string.size = size + lead;
+            element->value.string.flags = 0;
+        } else {
+            free(element);
+            element = NULL;
+        }
+    }
+    return element;
+}
+
 uasn1_item_t *uasn1_oid_new(unsigned int *elements,
                             size_t size)
 {

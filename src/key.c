@@ -185,6 +185,8 @@ uasn1_item_t *uasn1_key_get_asn1_public_key_info(uasn1_key_t *key)
             uasn1_add(info, uasn1_item_new(uasn1_null_type));
             uasn1_add(key_info, info);
             uasn1_add(key_info, public);
+        } else if (key->pkcs11.type == CKK_EC) {
+            key_info = public;
         }
     }
 

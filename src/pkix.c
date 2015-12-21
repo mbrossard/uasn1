@@ -125,8 +125,12 @@ void uasn1_x509_add_aki(uasn1_item_t *extensions,
                         unsigned char critical,
                         uasn1_item_t *key)
 {
+    uasn1_item_t *sequence = uasn1_sequence_new(1);
+    uasn1_set_tag(key, uasn1_context_specific_tag,
+                  0, uasn1_implicit_tag);
+    uasn1_add(sequence, key);
     uasn1_add_x509_extension(extensions, "authorityKeyIdentifier",
-                             critical, key);
+                             critical, sequence);
 }
 
 uasn1_x509_sda_t sdadb[] = {

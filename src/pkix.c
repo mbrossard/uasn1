@@ -95,7 +95,6 @@ void uasn1_x509_add_subject_alt_name(uasn1_item_t *extensions,
     uasn1_free(subjectAltName);
 }
 
-
 void uasn1_x509_add_basic_constraints(uasn1_item_t *extensions,
                                       unsigned char critical,
                                       unsigned char ca,
@@ -114,27 +113,21 @@ void uasn1_x509_add_basic_constraints(uasn1_item_t *extensions,
     uasn1_free(basicConstraints);
 }
 
-/*
 void uasn1_x509_add_ski(uasn1_item_t *extensions,
                         unsigned char critical,
                         uasn1_item_t *key)
 {
-    uasn1_item_t *key_sha1 = sha1ASN1Element(key);
     uasn1_add_x509_extension(extensions, "subjectKeyIdentifier",
-                             critical, key_sha1);
-    uasn1_free(key_sha1);
+                             critical, key);
 }
 
 void uasn1_x509_add_aki(uasn1_item_t *extensions,
                         unsigned char critical,
                         uasn1_item_t *key)
 {
-    uasn1_item_t *key_sha1 = sha1ASN1Element(key);
     uasn1_add_x509_extension(extensions, "authorityKeyIdentifier",
-                             critical, key_sha1);
-    uasn1_free(key_sha1);
+                             critical, key);
 }
-*/
 
 uasn1_x509_sda_t sdadb[] = {
     { "dateOfBirth",          uasn1_generalized_time_type },

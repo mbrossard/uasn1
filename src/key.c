@@ -281,6 +281,7 @@ uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest)
             algoid = uasn1_sequence_new(2);
             uasn1_add(algoid, uasn1_oid_new(sha1withRSAEncryption, 7));
             uasn1_add(algoid, uasn1_item_new(uasn1_null_type));
+            break;
         case UASN1_ECDSA:
             algoid = uasn1_sequence_new(1);
             uasn1_add(algoid, uasn1_oid_new(ecdsaWithSHA256, 7));

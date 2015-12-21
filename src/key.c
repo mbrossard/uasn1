@@ -126,8 +126,8 @@ uasn1_item_t *uasn1_key_get_asn1_public_key(uasn1_key_t *key)
                 goto done;
             }
 
-            n = uasn1_string_new(uasn1_integer_type, attrs[0].pValue, attrs[0].ulValueLen);
-            e = uasn1_string_new(uasn1_integer_type, attrs[1].pValue, attrs[1].ulValueLen);
+            e = uasn1_string_new(uasn1_integer_type, attrs[0].pValue, attrs[0].ulValueLen);
+            n = uasn1_string_new(uasn1_integer_type, attrs[1].pValue, attrs[1].ulValueLen);
             k = uasn1_asn1_rsa_public_key(n, e);
             attrs[0].pValue = NULL;
             attrs[1].pValue = NULL;

@@ -40,6 +40,8 @@ int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, 
     /* Subject Key Identifier */
     uasn1_x509_add_ski(extensions, uasn1_false, uasn1_key_get_key_identifier(public));
 
+    /* Authority Key Identifier */
+    uasn1_x509_add_aki(extensions, uasn1_false, uasn1_key_get_key_identifier(public));
 
     /* Building the TBS */
     tbs = uasn1_x509_tbs_new

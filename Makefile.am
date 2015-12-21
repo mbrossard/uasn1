@@ -33,3 +33,4 @@ tests_test_cryptoki_LDADD = libuasn1.a
 test: $(noinst_PROGRAMS)
 	(cd tests ; ./test_asn1)
 	(cd tests ; ./test_base64)
+	(cd tests ; ./test_cryptoki)

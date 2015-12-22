@@ -8,6 +8,7 @@
 #include "x509.h"
 #include "pkix.h"
 #include "utils.h"
+#include "request.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -67,6 +68,42 @@ int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, 
     fprintf(f, "-----BEGIN CERTIFICATE-----\n");
     uasn1_write_base64_buffer(buffer, f);
     fprintf(f, "-----END CERTIFICATE-----\n");
+    fclose(f);
+
+    uasn1_buffer_free(buffer);
+
+    return 0;
+}
+
+int request_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, char *name)
+{
+    uasn1_buffer_t *buffer = uasn1_buffer_new(1024);
+    uasn1_item_t *dn = uasn1_sequence_new(2);
+    uasn1_item_t *set = uasn1_set_new(1);
+    uasn1_item_t *tbs = NULL;
+    FILE *f = NULL;
+    char fname[64];
+
+    /* Building DN */
+    uasn1_add(dn, uasn1_dn_element("commonName", "Test"));
+    uasn1_add(dn, uasn1_dn_element("organizationName", "CA"));
+
+    /* Building the TBS */
+    tbs = uasn1_request_tbs_new
+        (dn,
+         uasn1_key_get_asn1_public_key_info(public),
+         set);
+ 
+    uasn1_x509_sign_new(tbs, private, digest, buffer);
+
+    sprintf(fname, "%s.der", name);
+    uasn1_write_buffer(buffer, fname);
+
+    sprintf(fname, "%s.pem", name);
+    f = fopen(fname, "w");
+    fprintf(f, "-----BEGIN CERTIFICATE REQUEST-----\n");
+    uasn1_write_base64_buffer(buffer, f);
+    fprintf(f, "-----END CERTIFICATE REQUEST-----\n");
     fclose(f);
 
     uasn1_buffer_free(buffer);

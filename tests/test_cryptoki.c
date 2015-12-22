@@ -179,6 +179,9 @@ int main(int argc, char **argv)
     x509_test(rsa_prv, rsa_pub, UASN1_SHA1, "rsa_crt");
     x509_test(ec_prv, ec_pub, UASN1_SHA256, "ec_crt");
 
+    request_test(rsa_prv, rsa_pub, UASN1_SHA1, "rsa_csr");
+    request_test(ec_prv, ec_pub, UASN1_SHA256, "ec_csr");
+
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {
         return rc;

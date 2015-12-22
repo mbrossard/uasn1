@@ -227,24 +227,33 @@ uasn1_item_t *uasn1_key_get_key_identifier(uasn1_key_t *key)
 
 uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
+    unsigned int id_sha1[6] = { 1, 3, 14, 3, 2, 26 };
+    unsigned int id_sha256[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 1 };
+    unsigned int id_sha384[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 2 };
+    unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
-    CK_BYTE hash[64], signature[1024];
+    CK_BYTE hash[64], signature[1024], *to_sign;
     CK_ULONG hlen = sizeof(hash), slen = sizeof(signature);
-    uasn1_item_t *sig;
+    uasn1_item_t *sig, *padding = uasn1_sequence_new(2), *algoid = uasn1_sequence_new(2);
     CK_RV rc;
+    uasn1_buffer_t *padbuf = uasn1_buffer_new(128);
 
     switch (digest) {
         case UASN1_SHA1:
             mechanism.mechanism = CKM_SHA_1;
+            uasn1_add(algoid, uasn1_oid_new(id_sha1, 6));
             break;
         case UASN1_SHA256:
             mechanism.mechanism = CKM_SHA256;
+            uasn1_add(algoid, uasn1_oid_new(id_sha256, 9));
             break;
         case UASN1_SHA384:
             mechanism.mechanism = CKM_SHA384;
+            uasn1_add(algoid, uasn1_oid_new(id_sha384, 9));
             break;
         case UASN1_SHA512:
             mechanism.mechanism = CKM_SHA512;
+            uasn1_add(algoid, uasn1_oid_new(id_sha512, 9));
             break;
     }
 
@@ -260,8 +269,17 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
 
     if (key->pkcs11.type == CKK_RSA) {
         mechanism.mechanism = CKM_RSA_PKCS;
+
+        uasn1_add(algoid, uasn1_item_new(uasn1_null_type));
+        uasn1_add(padding, algoid);
+        uasn1_add(padding, uasn1_octet_string_new(hash, hlen));
+        uasn1_encode(padding, padbuf);
+        to_sign = padbuf->buffer;
+        hlen = padbuf->current;
+        uasn1_write_buffer(padbuf, "padding.der");
     } else if (key->pkcs11.type == CKK_EC) {
         mechanism.mechanism = CKM_ECDSA;
+        to_sign = hash;
     }
 
     rc = key->pkcs11.functions->C_SignInit(key->pkcs11.session, &mechanism, key->pkcs11.object);
@@ -269,7 +287,7 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
         return NULL;
     }
 
-    rc = key->pkcs11.functions->C_Sign(key->pkcs11.session, hash, hlen, signature, &slen);
+    rc = key->pkcs11.functions->C_Sign(key->pkcs11.session, to_sign, hlen, signature, &slen);
     if (rc != CKR_OK) {
         return NULL;
     }

@@ -315,6 +315,9 @@ uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest)
     uasn1_item_t *algoid;
     uasn1_asymetric_t type = -1;
     unsigned int sha1withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 5 };
+    unsigned int sha256withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 11 };
+    unsigned int sha384withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 12 };
+    unsigned int sha512withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 13 };
     unsigned int ecdsaWithSHA256[7] = { 1, 2, 840, 10045, 4, 3, 2 };
 
     if(key->provider == UASN1_PKCS11) {
@@ -328,7 +331,20 @@ uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest)
     switch(type) {
         case UASN1_RSA:
             algoid = uasn1_sequence_new(2);
-            uasn1_add(algoid, uasn1_oid_new(sha1withRSAEncryption, 7));
+            switch(digest) {
+                case UASN1_SHA1:
+                    uasn1_add(algoid, uasn1_oid_new(sha1withRSAEncryption, 7));
+                    break;
+                case UASN1_SHA256:
+                    uasn1_add(algoid, uasn1_oid_new(sha256withRSAEncryption, 7));
+                    break;
+                case UASN1_SHA384:
+                    uasn1_add(algoid, uasn1_oid_new(sha384withRSAEncryption, 7));
+                    break;
+                case UASN1_SHA512:
+                    uasn1_add(algoid, uasn1_oid_new(sha512withRSAEncryption, 7));
+                    break;
+            }
             uasn1_add(algoid, uasn1_item_new(uasn1_null_type));
             break;
         case UASN1_ECDSA:

@@ -177,9 +177,11 @@ int main(int argc, char **argv)
     }
 
     request_test(rsa_prv, rsa_pub, UASN1_SHA1, "tests/rsa_sha1_csr");
+    request_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_csr");
     request_test(ec_prv, ec_pub, UASN1_SHA256, "tests/ec_csr");
 
     x509_test(rsa_prv, rsa_pub, UASN1_SHA1, "tests/rsa_sha1_crt");
+    x509_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_crt");
     x509_test(ec_prv, ec_pub, UASN1_SHA256, "tests/ec_crt");
 
 

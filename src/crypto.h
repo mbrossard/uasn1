@@ -40,6 +40,11 @@ uasn1_item_t *uasn1_key_get_asn1_public_key_info(uasn1_key_t *key);
 
 uasn1_item_t *uasn1_key_get_key_identifier(uasn1_key_t *key);
 
+uasn1_item_t *uasn1_key_sign(uasn1_key_t *key, unsigned char *data,
+                             size_t size, uasn1_type_t encoding);
+
+uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer);
+
 uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest);
 
 int uasn1_x509_sign_new(uasn1_item_t *tbs,

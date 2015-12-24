@@ -230,6 +230,25 @@ static unsigned int id_sha256[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 1 };
 static unsigned int id_sha384[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 2 };
 static unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
 
+uasn1_item_t *uasn1_digest_oid(uasn1_digest_t digest)
+{
+    switch (digest) {
+        case UASN1_SHA1:
+            return uasn1_oid_new(id_sha1, 6);
+            break;
+        case UASN1_SHA256:
+            return uasn1_oid_new(id_sha256, 9);
+            break;
+        case UASN1_SHA384:
+            return uasn1_oid_new(id_sha384, 9);
+            break;
+        case UASN1_SHA512:
+            return uasn1_oid_new(id_sha512, 9);
+            break;
+    }
+    return NULL;
+}
+
 uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };

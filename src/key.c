@@ -225,12 +225,13 @@ uasn1_item_t *uasn1_key_get_key_identifier(uasn1_key_t *key)
     return ki;
 }
 
+static unsigned int id_sha1[6] = { 1, 3, 14, 3, 2, 26 };
+static unsigned int id_sha256[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 1 };
+static unsigned int id_sha384[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 2 };
+static unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
+
 uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
-    unsigned int id_sha1[6] = { 1, 3, 14, 3, 2, 26 };
-    unsigned int id_sha256[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 1 };
-    unsigned int id_sha384[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 2 };
-    unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
     CK_BYTE hash[64], signature[1024], *to_sign;
     CK_ULONG hlen = sizeof(hash), slen = sizeof(signature);

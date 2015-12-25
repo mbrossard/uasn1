@@ -45,6 +45,8 @@ uasn1_item_t *uasn1_key_sign(uasn1_key_t *key, unsigned char *data,
 
 uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer);
 
+uasn1_item_t *uasn1_digest_octet_string(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
+                                        uasn1_digest_t digest, CK_BYTE_PTR data, CK_ULONG length);
 uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest);
 
 uasn1_item_t *uasn1_digest_oid(uasn1_digest_t digest);

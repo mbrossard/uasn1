@@ -230,6 +230,54 @@ static unsigned int id_sha256[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 1 };
 static unsigned int id_sha384[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 2 };
 static unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
 
+uasn1_item_t *uasn1_digest_octet_string(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
+                                        uasn1_digest_t digest, CK_BYTE_PTR data, CK_ULONG length)
+{
+    CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
+    CK_SESSION_HANDLE h_session;
+    CK_BYTE buf[64], *hash = NULL;
+    CK_ULONG hlen;
+    CK_RV rc;
+
+    switch (digest) {
+        case UASN1_SHA1:
+            mechanism.mechanism = CKM_SHA_1;
+            break;
+        case UASN1_SHA256:
+            mechanism.mechanism = CKM_SHA256;
+            break;
+        case UASN1_SHA384:
+            mechanism.mechanism = CKM_SHA384;
+            break;
+        case UASN1_SHA512:
+            mechanism.mechanism = CKM_SHA512;
+            break;
+    }
+
+    rc = funcs->C_OpenSession(slot, CKF_SERIAL_SESSION,
+                              NULL_PTR, NULL_PTR, &h_session);
+    if (rc != CKR_OK) {
+        return NULL;
+    }
+
+    rc = funcs->C_DigestInit(h_session, &mechanism);
+    if (rc != CKR_OK) {
+        return NULL;
+    }
+
+    rc = funcs->C_Digest(h_session, data, length, buf, &hlen);
+    if (rc != CKR_OK) {
+        return NULL;
+    }
+
+    rc = funcs->C_CloseSession(h_session);
+
+    hash = malloc(hlen);
+    memcpy(hash, buf, hlen);
+
+    return uasn1_octet_string_new(hash, hlen);
+}
+
 uasn1_item_t *uasn1_digest_oid(uasn1_digest_t digest)
 {
     switch (digest) {

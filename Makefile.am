@@ -15,6 +15,7 @@ libuasn1_a_SOURCES = src/uasn1.c \
 	src/oidsdb.c \
 	src/pkix.c \
 	src/request.c \
+	src/tsa.c \
 	src/utils.c \
 	src/x509.c
 

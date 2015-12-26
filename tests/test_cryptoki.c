@@ -8,6 +8,7 @@
 #include "x509.h"
 #include "pkix.h"
 #include "utils.h"
+#include "tsa.h"
 #include "request.h"
 
 #include <string.h>
@@ -111,6 +112,24 @@ int request_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t diges
     return 0;
 }
 
+int tsa_request_test(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
+                     uasn1_digest_t digest, char *name)
+{
+    uasn1_buffer_t *buffer = uasn1_buffer_new(1024);
+    uasn1_item_t *hash = uasn1_digest_octet_string(funcs, slot, digest,
+                                                   buffer->buffer, buffer->size);
+    uasn1_item_t *imprint = uasn1_tsa_imprint(digest, hash);
+    uasn1_item_t *tsa_request = uasn1_tsa_request(imprint, NULL, NULL, NULL, NULL);
+    char fname[64];
+
+    uasn1_encode(tsa_request, buffer);
+    sprintf(fname, "%s_tsa_req.der", name);
+    uasn1_write_buffer(buffer, fname);
+    uasn1_buffer_free(buffer);
+
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
 #ifndef DEFAULT_PKCS11_MODULE
@@ -184,6 +203,7 @@ int main(int argc, char **argv)
     x509_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_crt");
     x509_test(ec_prv, ec_pub, UASN1_SHA256, "tests/ec_crt");
 
+    tsa_request_test(funcs, slot, UASN1_SHA1, "tests/sha1");
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

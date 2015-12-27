@@ -278,6 +278,21 @@ uasn1_item_t *uasn1_digest_octet_string(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID s
     return uasn1_octet_string_new(hash, hlen);
 }
 
+uasn1_item_t *uasn1_hash_buffer_to_octet_string(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
+{
+    return uasn1_digest_octet_string(key->pkcs11.functions, key->pkcs11.slot, digest, buffer->buffer, buffer->current);
+}
+
+uasn1_item_t *uasn1_hash_to_octet_string(uasn1_key_t *key, uasn1_digest_t digest, uasn1_item_t *item)
+{
+    uasn1_item_t *hash = NULL;
+    uasn1_buffer_t *buffer = uasn1_buffer_new(64);
+    uasn1_encode(item, buffer);
+    hash = uasn1_digest_octet_string(key->pkcs11.functions, key->pkcs11.slot, digest, buffer->buffer, buffer->current);
+    uasn1_buffer_free(buffer);
+    return hash;
+}
+
 uasn1_item_t *uasn1_digest_oid(uasn1_digest_t digest)
 {
     switch (digest) {

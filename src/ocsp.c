@@ -6,8 +6,6 @@
 #include "x509.h"
 #include "ocsp.h"
 #include "oids.h"
-#include "sign.h"
-#include "utils.h"
 
 uasn1_item_t *uasn1_ocsp_request(unsigned int version,
                                  uasn1_item_t *name,

@@ -235,7 +235,9 @@ int main(int argc, char **argv)
     ocsp_request_test(rsa_pub, "tests/rsa_sha256_crt");
     ocsp_request_test(ec_pub,  "tests/ec_crt");
 
-    tsa_request_test(funcs, slot, UASN1_SHA1, "tests/sha1");
+    tsa_request_test(funcs, slot, UASN1_SHA1,   "tests/sha1");
+    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256");
+    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256_ec");
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

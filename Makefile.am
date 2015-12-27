@@ -11,6 +11,7 @@ libuasn1_a_SOURCES = src/uasn1.c \
 	src/decode.c \
 	src/encode.c \
 	src/key.c \
+	src/ocsp.c \
 	src/oids.c \
 	src/oidsdb.c \
 	src/pkix.c \

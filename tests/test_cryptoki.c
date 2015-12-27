@@ -8,6 +8,7 @@
 #include "x509.h"
 #include "pkix.h"
 #include "utils.h"
+#include "ocsp.h"
 #include "tsa.h"
 #include "request.h"
 
@@ -112,6 +113,33 @@ int request_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t diges
     return 0;
 }
 
+int ocsp_request_test(uasn1_key_t *key, char *name)
+{
+    uasn1_item_t *list = uasn1_sequence_new(1);
+    uasn1_item_t *tbs;
+    uasn1_item_t *req;
+    uasn1_buffer_t *crt1 = uasn1_buffer_new(64);
+    uasn1_buffer_t *crt2 = uasn1_buffer_new(64);
+    uasn1_buffer_t *buffer = uasn1_buffer_new(64);
+    char fname[64];
+
+    sprintf(fname, "%s.der", name);
+	uasn1_load_buffer(crt1, fname);
+	uasn1_load_buffer(crt2, fname);
+
+	uasn1_add(list, uasn1_ocsp_single_request(key, crt1, crt2, NULL));
+
+	req = uasn1_ocsp_request(0, NULL, list, NULL);
+
+    uasn1_encode(req, buffer);
+
+    sprintf(fname, "%s_ocsp_req.der", name);
+    uasn1_write_buffer(buffer, fname);
+
+    uasn1_buffer_free(buffer);
+    return 0;
+}
+
 int tsa_request_test(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
                      uasn1_digest_t digest, char *name)
 {
@@ -202,6 +230,10 @@ int main(int argc, char **argv)
     x509_test(rsa_prv, rsa_pub, UASN1_SHA1, "tests/rsa_sha1_crt");
     x509_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_crt");
     x509_test(ec_prv, ec_pub, UASN1_SHA256, "tests/ec_crt");
+
+    ocsp_request_test(rsa_pub, "tests/rsa_sha1_crt");
+    ocsp_request_test(rsa_pub, "tests/rsa_sha256_crt");
+    ocsp_request_test(ec_pub,  "tests/ec_crt");
 
     tsa_request_test(funcs, slot, UASN1_SHA1, "tests/sha1");
 

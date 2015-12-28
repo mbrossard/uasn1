@@ -51,6 +51,7 @@ uasn1_item_t *uasn1_hash_buffer_to_octet_string(uasn1_key_t *key, uasn1_digest_t
 uasn1_item_t *uasn1_hash_to_octet_string(uasn1_key_t *key, uasn1_digest_t digest, uasn1_item_t *item);
 
 uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest);
+uasn1_item_t *uasn1_x509_algorithm2(uasn1_key_t *key, uasn1_digest_t digest);
 
 uasn1_item_t *uasn1_digest_oid(uasn1_digest_t digest);
 

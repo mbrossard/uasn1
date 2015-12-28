@@ -440,6 +440,38 @@ uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest)
     return algoid;
 }
 
+uasn1_item_t *uasn1_x509_algorithm2(uasn1_key_t *key, uasn1_digest_t digest)
+{
+    uasn1_item_t *algoid;
+    uasn1_asymetric_t type = -1;
+    unsigned int rsaEncryption[7] = { 1, 2, 840, 113549, 1, 1, 1 };
+    unsigned int ecdsaWithSHA256[7] = { 1, 2, 840, 10045, 4, 3, 2 };
+
+    if(key->provider == UASN1_PKCS11) {
+        if (key->pkcs11.type == CKK_RSA) {
+            type = UASN1_RSA;
+        } else if (key->pkcs11.type == CKK_EC) {
+            type = UASN1_ECDSA;
+        }
+    }
+
+    switch(type) {
+        case UASN1_RSA:
+            algoid = uasn1_sequence_new(2);
+            uasn1_add(algoid, uasn1_oid_new(rsaEncryption, 7));
+            uasn1_add(algoid, uasn1_item_new(uasn1_null_type));
+            break;
+        case UASN1_ECDSA:
+            algoid = uasn1_sequence_new(1);
+            uasn1_add(algoid, uasn1_oid_new(ecdsaWithSHA256, 7));
+            break;
+        default:
+            break;
+    }
+
+    return algoid;
+}
+
 int uasn1_x509_sign_new(uasn1_item_t *tbs,
                         uasn1_key_t *key,
                         uasn1_digest_t digest,

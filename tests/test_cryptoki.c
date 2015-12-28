@@ -14,6 +14,23 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
+
+uasn1_item_t *getGeneralizedTime()
+{
+    time_t t = time(NULL);
+    struct tm *st = localtime(&t);
+    unsigned char g[16];
+    sprintf((char *)g, "%04d%02d%02d%02d%02d%02dZ",
+            (st->tm_year + 1900) % 10000,
+            st->tm_mon % 100,
+            st->tm_mday % 100,
+            st->tm_hour % 100,
+            st->tm_min % 100,
+            st->tm_sec % 100);
+
+    return uasn1_generalized_time_new(g, 15);
+}
 
 int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, char *name)
 {
@@ -158,6 +175,39 @@ int tsa_request_test(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
     return 0;
 }
 
+int tsa_response_test(uasn1_digest_t digest, char *name, char *crt_path, uasn1_key_t *key)
+{
+    unsigned int foo[7] = { 1, 2, 3, 4, 5, 6, 7 };
+    uasn1_buffer_t *crt = uasn1_buffer_new(1024);
+    uasn1_buffer_t *tsq = uasn1_buffer_new(128);
+    uasn1_buffer_t *tsr = uasn1_buffer_new(1024);
+    uasn1_item_t *req, *tstinfo, *response;
+    char fname[64];
+
+    sprintf(fname, "%s_tsa_req.der", name);
+    uasn1_load_buffer(tsq, fname);
+    sprintf(fname, "%s.der", crt_path);
+    uasn1_load_buffer(crt, fname);
+
+    req = uasn1_decode(tsq);
+    tstinfo = uasn1_tstinfo(uasn1_oid_new(foo, 7),
+                            req->value.list.elements[1],
+                            uasn1_integer_new(1),
+                            getGeneralizedTime(),
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL);
+
+    response = uasn1_tsa_response(tstinfo, digest, getUtcTime(), crt, key);
+    uasn1_encode(response, tsr);
+    sprintf(fname, "%s_tsa_res.der", name);
+    uasn1_write_buffer(tsr, fname);
+
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
 #ifndef DEFAULT_PKCS11_MODULE
@@ -238,6 +288,10 @@ int main(int argc, char **argv)
     tsa_request_test(funcs, slot, UASN1_SHA1,   "tests/sha1");
     tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256");
     tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256_ec");
+
+    tsa_response_test(UASN1_SHA1,   "tests/sha1",       "tests/rsa_sha1_crt",   rsa_prv);
+    tsa_response_test(UASN1_SHA256, "tests/sha256",     "tests/rsa_sha256_crt", rsa_prv);
+    tsa_response_test(UASN1_SHA256, "tests/sha256_ec",  "tests/ec_crt",         ec_prv);
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

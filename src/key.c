@@ -359,7 +359,6 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
         uasn1_encode(padding, padbuf);
         to_sign = padbuf->buffer;
         hlen = padbuf->current;
-        uasn1_write_buffer(padbuf, "padding.der");
     } else if (key->pkcs11.type == CKK_EC) {
         mechanism.mechanism = CKM_ECDSA;
         to_sign = hash;

@@ -32,6 +32,22 @@ uasn1_item_t *getGeneralizedTime()
     return uasn1_generalized_time_new(g, 15);
 }
 
+uasn1_item_t *getUtcTime()
+{
+    time_t t = time(NULL);
+    struct tm *st = gmtime(&t);
+    unsigned char g[16];
+    sprintf((char *)g, "%02d%02d%02d%02d%02d%02dZ",
+            st->tm_year % 100,
+            st->tm_mon + 1 % 100,
+            st->tm_mday % 100,
+            st->tm_hour % 100,
+            st->tm_min % 100,
+            st->tm_sec % 100);
+
+    return uasn1_utc_time_new(g, 13);
+}
+
 int x509_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t digest, char *name)
 {
     uasn1_buffer_t *buffer = uasn1_buffer_new(64);

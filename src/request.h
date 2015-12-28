@@ -46,4 +46,18 @@ uasn1_item_t *uasn1_request_tbs_new(uasn1_item_t *subject,
                                     uasn1_item_t *public,
                                     uasn1_item_t *attributes);
 
+/**
+ * @function uasn1_request_add_attribute
+ */
+void uasn1_request_add_attribute(uasn1_item_t *set,
+                                 uasn1_item_t *attribute);
+
+/**
+ * @function uasn1_request_sign
+ */
+int uasn1_request_sign(uasn1_item_t *tbs,
+                       uasn1_key_t *key,
+                       uasn1_digest_t digest,
+                       uasn1_buffer_t *buffer);
+
 #endif

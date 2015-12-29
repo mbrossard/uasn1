@@ -8,7 +8,6 @@
 #include "x509.h"
 #include "pkix.h"
 #include "utils.h"
-#include "ocsp.h"
 #include "tsa.h"
 #include "request.h"
 
@@ -143,33 +142,6 @@ int request_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t diges
 
     uasn1_buffer_free(buffer);
 
-    return 0;
-}
-
-int ocsp_request_test(uasn1_key_t *key, char *name)
-{
-    uasn1_item_t *list = uasn1_sequence_new(1);
-    uasn1_item_t *tbs;
-    uasn1_item_t *req;
-    uasn1_buffer_t *crt1 = uasn1_buffer_new(64);
-    uasn1_buffer_t *crt2 = uasn1_buffer_new(64);
-    uasn1_buffer_t *buffer = uasn1_buffer_new(64);
-    char fname[64];
-
-    sprintf(fname, "%s.der", name);
-	uasn1_load_buffer(crt1, fname);
-	uasn1_load_buffer(crt2, fname);
-
-	uasn1_add(list, uasn1_ocsp_single_request(key, crt1, crt2, NULL));
-
-	req = uasn1_ocsp_request(0, NULL, list, NULL);
-
-    uasn1_encode(req, buffer);
-
-    sprintf(fname, "%s_ocsp_req.der", name);
-    uasn1_write_buffer(buffer, fname);
-
-    uasn1_buffer_free(buffer);
     return 0;
 }
 

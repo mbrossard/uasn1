@@ -21,6 +21,9 @@ extern "C" {
 /** Encodes an uasn1_item_t object and write to file. */
 int uasn1_write_encoded(uasn1_item_t *item, char *filename);
 
+uasn1_item_t *uasn1_get_generalized_time();
+uasn1_item_t *uasn1_get_utc_time();
+
 #ifdef HAVE_OPENSSL
 /** Converts an OpenSSL BIGNUM structure to a ASN1Element integer. */
 uasn1_item_t *uasn1_bn_to_asn1(BIGNUM *bn);

@@ -18,32 +18,38 @@ int uasn1_write_encoded(uasn1_item_t *element, char *filename)
 
 uasn1_item_t *uasn1_get_generalized_time()
 {
-    time_t t = time(NULL);
-    struct tm *st = localtime(&t);
     unsigned char g[16];
+    struct tm st;
+    time_t t = time(NULL);
+
+    gmtime_r(&t, &st);
+
     sprintf((char *)g, "%04d%02d%02d%02d%02d%02dZ",
-            (st->tm_year + 1900) % 10000,
-            st->tm_mon % 100,
-            st->tm_mday % 100,
-            st->tm_hour % 100,
-            st->tm_min % 100,
-            st->tm_sec % 100);
+            (st.tm_year + 1900) % 10000,
+            st.tm_mon % 100,
+            st.tm_mday % 100,
+            st.tm_hour % 100,
+            st.tm_min % 100,
+            st.tm_sec % 100);
 
     return uasn1_generalized_time_new(g, 15);
 }
 
 uasn1_item_t *uasn1_get_utc_time()
 {
-    time_t t = time(NULL);
-    struct tm *st = gmtime(&t);
     unsigned char g[16];
+    struct tm st;
+    time_t t = time(NULL);
+
+    gmtime_r(&t, &st);
+
     sprintf((char *)g, "%02d%02d%02d%02d%02d%02dZ",
-            st->tm_year % 100,
-            st->tm_mon + 1 % 100,
-            st->tm_mday % 100,
-            st->tm_hour % 100,
-            st->tm_min % 100,
-            st->tm_sec % 100);
+            st.tm_year % 100,
+            st.tm_mon + 1 % 100,
+            st.tm_mday % 100,
+            st.tm_hour % 100,
+            st.tm_min % 100,
+            st.tm_sec % 100);
 
     return uasn1_utc_time_new(g, 13);
 }

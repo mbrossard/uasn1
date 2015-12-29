@@ -273,6 +273,10 @@ int main(int argc, char **argv)
     ocsp_request_test(rsa_pub, "tests/rsa_sha256_crt");
     ocsp_request_test(ec_pub,  "tests/ec_crt");
 
+    ocsp_response_test(rsa_prv, UASN1_SHA1,   "tests/rsa_sha1_crt");
+    ocsp_response_test(rsa_prv, UASN1_SHA256, "tests/rsa_sha256_crt");
+    ocsp_response_test(ec_prv,  UASN1_SHA256, "tests/ec_crt");
+
     tsa_request_test(funcs, slot, UASN1_SHA1,   "tests/sha1");
     tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256");
     tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256_ec");

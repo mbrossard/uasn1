@@ -30,7 +30,8 @@ tests_test_asn1_LDADD = libuasn1.a
 tests_test_base64_SOURCES = src/base64.c
 tests_test_base64_CFLAGS = -DBASE64_TEST
 
-tests_test_cryptoki_SOURCES = tests/test_cryptoki.c
+tests_test_cryptoki_SOURCES = tests/test_cryptoki.c \
+	tests/ocsp_test.c
 tests_test_cryptoki_LDADD = libuasn1.a
 
 test: $(noinst_PROGRAMS)

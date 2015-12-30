@@ -51,14 +51,14 @@ int tsa_response_test(uasn1_digest_t digest, char *name, char *crt_path, uasn1_k
     tstinfo = uasn1_tstinfo(uasn1_oid_new(foo, 7),
                             req->value.list.elements[1],
                             uasn1_integer_new(1),
-                            getGeneralizedTime(),
+                            uasn1_get_generalized_time(0),
                             NULL,
                             NULL,
                             NULL,
                             NULL,
                             NULL);
 
-    response = uasn1_tsa_response(tstinfo, digest, getUtcTime(), crt, key);
+    response = uasn1_tsa_response(tstinfo, digest, uasn1_get_utc_time(0), crt, key);
     uasn1_encode(response, tsr);
     sprintf(fname, "%s_tsa_res.der", name);
     uasn1_write_buffer(tsr, fname);

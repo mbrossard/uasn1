@@ -69,12 +69,12 @@ int ocsp_response_test(uasn1_key_t *private, uasn1_digest_t digest, char *name)
     for(i = 0; i < uasn1_count(requestlist); i++) {
         uasn1_item_t *certid = uasn1_ocsp_get_request_cert_id(uasn1_get(requestlist,i));
         uasn1_item_t *single = uasn1_ocsp_single_response
-            (certid, good, NULL, uasn1_get_generalized_time(), NULL, NULL);
+            (certid, good, NULL, uasn1_get_generalized_time(0), NULL, NULL);
         uasn1_add(responselist, single);
 	}
 
     responsedata = uasn1_ocsp_response_data(0, uasn1_ocsp_responder_id_name(cert),
-                                            uasn1_get_generalized_time(),
+                                            uasn1_get_generalized_time(0),
                                             responselist, NULL);
 
     certs = uasn1_sequence_new(1);

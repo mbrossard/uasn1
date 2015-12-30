@@ -16,11 +16,13 @@ int uasn1_write_encoded(uasn1_item_t *element, char *filename)
     return 0;
 }
 
-uasn1_item_t *uasn1_get_generalized_time()
+uasn1_item_t *uasn1_get_generalized_time(int offset)
 {
     unsigned char g[16];
     struct tm st;
     time_t t = time(NULL);
+
+    t += offset;
 
     gmtime_r(&t, &st);
 
@@ -35,11 +37,13 @@ uasn1_item_t *uasn1_get_generalized_time()
     return uasn1_generalized_time_new(g, 15);
 }
 
-uasn1_item_t *uasn1_get_utc_time()
+uasn1_item_t *uasn1_get_utc_time(int offset)
 {
     unsigned char g[16];
     struct tm st;
     time_t t = time(NULL);
+
+    t += offset;
 
     gmtime_r(&t, &st);
 

@@ -155,13 +155,13 @@ int main(int argc, char **argv)
     ocsp_response_test(rsa_prv, UASN1_SHA256, "tests/rsa_sha256_crt");
     ocsp_response_test(ec_prv,  UASN1_SHA256, "tests/ec_crt");
 
-    tsa_request_test(funcs, slot, UASN1_SHA1,   "tests/sha1");
-    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256");
-    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/sha256_ec");
+    tsa_request_test(funcs, slot, UASN1_SHA1,   "tests/rsa1");
+    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/rsa2");
+    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/ec");
 
-    tsa_response_test(UASN1_SHA1,   "tests/sha1",       "tests/rsa_sha1_crt",   rsa_prv);
-    tsa_response_test(UASN1_SHA256, "tests/sha256",     "tests/rsa_sha256_crt", rsa_prv);
-    tsa_response_test(UASN1_SHA256, "tests/sha256_ec",  "tests/ec_crt",         ec_prv);
+    tsa_response_test(UASN1_SHA1,   "tests/rsa1", "tests/tsa_rsa1_crt", rsa_prv);
+    tsa_response_test(UASN1_SHA256, "tests/rsa2", "tests/tsa_rsa2_crt", rsa_prv);
+    tsa_response_test(UASN1_SHA256, "tests/ec",   "tests/tsa_ec_crt",   ec_prv);
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

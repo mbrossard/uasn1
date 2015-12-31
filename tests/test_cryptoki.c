@@ -147,9 +147,9 @@ int main(int argc, char **argv)
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_ca", "tests/ocsp_rsa2_crt");
     x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",         "tests/ocsp_ec_crt");
 
-    ocsp_request_test(rsa_pub, "tests/rsa_sha1_crt");
-    ocsp_request_test(rsa_pub, "tests/rsa_sha256_crt");
-    ocsp_request_test(ec_pub,  "tests/ec_crt");
+    ocsp_request_test(rsa_pub, "tests/rsa_sha1_ca",   "tests/ocsp_rsa1_crt");
+    ocsp_request_test(rsa_pub, "tests/rsa_sha256_ca", "tests/ocsp_rsa2_crt");
+    ocsp_request_test(ec_pub,  "tests/ec_ca",         "tests/ocsp_ec_crt");
 
     ocsp_response_test(rsa_prv, UASN1_SHA1,   "tests/rsa_sha1_crt");
     ocsp_response_test(rsa_prv, UASN1_SHA256, "tests/rsa_sha256_crt");

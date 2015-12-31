@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int ocsp_request_test(uasn1_key_t *key, char *name)
+int ocsp_request_test(uasn1_key_t *key, char *ca, char *name)
 {
     uasn1_item_t *list = uasn1_sequence_new(1);
     uasn1_item_t *tbs;
@@ -22,6 +22,7 @@ int ocsp_request_test(uasn1_key_t *key, char *name)
 
     sprintf(fname, "%s.der", name);
 	uasn1_load_buffer(crt1, fname);
+    sprintf(fname, "%s.der", ca);
 	uasn1_load_buffer(crt2, fname);
 
 	uasn1_add(list, uasn1_ocsp_single_request(key, crt1, crt2, NULL));
@@ -30,7 +31,7 @@ int ocsp_request_test(uasn1_key_t *key, char *name)
 
     uasn1_encode(req, buffer);
 
-    sprintf(fname, "%s_ocsp_req.der", name);
+    sprintf(fname, "%s_req.der", name);
     uasn1_write_buffer(buffer, fname);
 
     uasn1_buffer_free(buffer);
@@ -51,7 +52,7 @@ int ocsp_response_test(uasn1_key_t *private, uasn1_digest_t digest, char *name)
     char fname[64];
 
     buffer = uasn1_buffer_new(64);
-    sprintf(fname, "%s_ocsp_req.der", name);
+    sprintf(fname, "%s_req.der", name);
     uasn1_load_buffer(buffer, fname);
     request = uasn1_decode(buffer);
     uasn1_buffer_free(buffer);
@@ -85,7 +86,7 @@ int ocsp_response_test(uasn1_key_t *private, uasn1_digest_t digest, char *name)
 
     buffer = uasn1_buffer_new(64);
     uasn1_encode(ocsp, buffer);
-    sprintf(fname, "%s_ocsp_res.der", name);
+    sprintf(fname, "%s_res.der", name);
     uasn1_write_buffer(buffer, fname);
     uasn1_buffer_free(buffer);
 

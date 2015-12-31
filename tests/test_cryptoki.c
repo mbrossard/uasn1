@@ -4,7 +4,6 @@
 
 #include "config.h"
 #include "cryptoki.h"
-#include "crypto.h"
 #include "tests.h"
 #include "x509.h"
 #include "pkix.h"

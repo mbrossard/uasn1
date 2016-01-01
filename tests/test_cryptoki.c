@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 #else
     char              *pin = "Vl0RJlAKiUMf";
     char              *label = "UASN1";
-    char              *dir = ".";
+    char              *dir = "tests";
     CK_ULONG          slot = 2;
     CK_UTF8CHAR_PTR   rsa_label = (CK_UTF8CHAR_PTR)"rsa2048";
     CK_UTF8CHAR_PTR   ec_label = (CK_UTF8CHAR_PTR)"ec256";

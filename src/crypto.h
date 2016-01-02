@@ -55,9 +55,9 @@ uasn1_item_t *uasn1_x509_algorithm2(uasn1_key_t *key, uasn1_digest_t digest);
 
 uasn1_item_t *uasn1_digest_oid(uasn1_digest_t digest);
 
-int uasn1_x509_sign_new(uasn1_item_t *tbs,
-                        uasn1_key_t *key,
-                        uasn1_digest_t digest,
-                        uasn1_buffer_t *buffer);
+int uasn1_x509_sign(uasn1_item_t *tbs,
+                    uasn1_key_t *key,
+                    uasn1_digest_t digest,
+                    uasn1_buffer_t *buffer);
 
 #endif

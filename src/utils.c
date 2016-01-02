@@ -28,7 +28,7 @@ uasn1_item_t *uasn1_get_generalized_time(int offset)
 
     sprintf((char *)g, "%04d%02d%02d%02d%02d%02dZ",
             (st.tm_year + 1900) % 10000,
-            st.tm_mon % 100,
+            st.tm_mon % 100  + 1,
             st.tm_mday % 100,
             st.tm_hour % 100,
             st.tm_min % 100,

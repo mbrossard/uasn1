@@ -69,9 +69,9 @@ int main(int argc, char **argv)
     }
 
     uasn1_key_t *rsa_prv = uasn1_load_pkcs11_key(funcs, slot, CKO_PRIVATE_KEY, rsa_label);
-    uasn1_key_t *rsa_pub = uasn1_load_pkcs11_key(funcs, slot, CKO_PUBLIC_KEY, rsa_label);
-    uasn1_key_t *ec_prv = uasn1_load_pkcs11_key(funcs, slot, CKO_PRIVATE_KEY, ec_label);
-    uasn1_key_t *ec_pub = uasn1_load_pkcs11_key(funcs, slot, CKO_PUBLIC_KEY, ec_label);
+    uasn1_key_t *rsa_pub = uasn1_load_pkcs11_key(funcs, slot, CKO_PUBLIC_KEY,  rsa_label);
+    uasn1_key_t *ec_prv =  uasn1_load_pkcs11_key(funcs, slot, CKO_PRIVATE_KEY, ec_label);
+    uasn1_key_t *ec_pub =  uasn1_load_pkcs11_key(funcs, slot, CKO_PUBLIC_KEY,  ec_label);
 
     if(!(rsa_prv && rsa_pub && ec_prv && ec_pub)) {
         printf("RSA private (%p), public (%p)\n", rsa_prv, rsa_pub);
@@ -79,28 +79,29 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    request_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa_sha1_csr");
-    request_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_csr");
+    request_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_csr");
+    request_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_csr");
     request_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_csr");
 
-    x509_self_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa_sha1_ca");
-    x509_self_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_ca");
+    x509_self_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_ca");
+    x509_self_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca");
     x509_self_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca");
 
-    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa_sha1_ca",   "tests/tsa_rsa1_crt");
-    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_ca", "tests/tsa_rsa2_crt");
-    x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",         "tests/tsa_ec_crt");
     crl_test(rsa_prv, UASN1_SHA1,   "tests/rsa1_ca");
     crl_test(rsa_prv, UASN1_SHA256, "tests/rsa2_ca");
     crl_test(ec_prv,  UASN1_SHA256, "tests/ec_ca");
 
-    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa_sha1_ca",   "tests/ocsp_rsa1_crt");
-    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_ca", "tests/ocsp_rsa2_crt");
-    x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",         "tests/ocsp_ec_crt");
+    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_ca", "tests/tsa_rsa1_crt");
+    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca", "tests/tsa_rsa2_crt");
+    x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",   "tests/tsa_ec_crt");
 
-    ocsp_request_test(rsa_pub, "tests/rsa_sha1_ca",   "tests/ocsp_rsa1_crt");
-    ocsp_request_test(rsa_pub, "tests/rsa_sha256_ca", "tests/ocsp_rsa2_crt");
-    ocsp_request_test(ec_pub,  "tests/ec_ca",         "tests/ocsp_ec_crt");
+    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_ca", "tests/ocsp_rsa1_crt");
+    x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
+    x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",   "tests/ocsp_ec_crt");
+
+    ocsp_request_test(rsa_pub, "tests/rsa1_ca", "tests/ocsp_rsa1_crt");
+    ocsp_request_test(rsa_pub, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
+    ocsp_request_test(ec_pub,  "tests/ec_ca",   "tests/ocsp_ec_crt");
 
     ocsp_response_test(rsa_prv, UASN1_SHA1,   "tests/ocsp_rsa1_crt");
     ocsp_response_test(rsa_prv, UASN1_SHA256, "tests/ocsp_rsa2_crt");

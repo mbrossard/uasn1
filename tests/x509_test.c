@@ -51,7 +51,7 @@ int x509_self_test(uasn1_key_t *private, uasn1_key_t *public,
          NULL,
          extensions);
  
-    uasn1_x509_sign_new(tbs, private, digest, buffer);
+    uasn1_x509_sign(tbs, private, digest, buffer);
 
     sprintf(fname, "%s.der", name);
     uasn1_write_buffer(buffer, fname);
@@ -127,7 +127,7 @@ int x509_sign_test(uasn1_key_t *private, uasn1_key_t *public,
          NULL,
          extensions);
  
-    uasn1_x509_sign_new(tbs, private, digest, buffer);
+    uasn1_x509_sign(tbs, private, digest, buffer);
 
     sprintf(fname, "%s.der", name);
     uasn1_write_buffer(buffer, fname);
@@ -163,7 +163,7 @@ int request_test(uasn1_key_t *private, uasn1_key_t *public, uasn1_digest_t diges
          uasn1_key_get_asn1_public_key_info(public),
          set);
  
-    uasn1_x509_sign_new(tbs, private, digest, buffer);
+    uasn1_x509_sign(tbs, private, digest, buffer);
 
     sprintf(fname, "%s.der", name);
     uasn1_write_buffer(buffer, fname);

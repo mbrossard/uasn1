@@ -31,6 +31,7 @@ tests_test_base64_SOURCES = src/base64.c
 tests_test_base64_CFLAGS = -DBASE64_TEST
 
 tests_test_cryptoki_SOURCES = tests/test_cryptoki.c \
+	tests/crl_test.c \
 	tests/ocsp_test.c \
 	tests/tsa_test.c \
 	tests/x509_test.c

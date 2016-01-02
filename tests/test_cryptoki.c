@@ -90,6 +90,9 @@ int main(int argc, char **argv)
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa_sha1_ca",   "tests/tsa_rsa1_crt");
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_ca", "tests/tsa_rsa2_crt");
     x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",         "tests/tsa_ec_crt");
+    crl_test(rsa_prv, UASN1_SHA1,   "tests/rsa1_ca");
+    crl_test(rsa_prv, UASN1_SHA256, "tests/rsa2_ca");
+    crl_test(ec_prv,  UASN1_SHA256, "tests/ec_ca");
 
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa_sha1_ca",   "tests/ocsp_rsa1_crt");
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa_sha256_ca", "tests/ocsp_rsa2_crt");

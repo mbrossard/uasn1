@@ -57,8 +57,8 @@ uasn1_item_t *uasn1_crl_tbs_new(uasn1_item_t *signature,
 /**
  * @function uasn1_crl_add_entry
  */
-void uasn1_crl_add_entry(uasn1_item_t *list, int cert,
-                         char *date, uasn1_item_t *extensions);
+void uasn1_crl_add_entry(uasn1_item_t *list, uasn1_item_t *serial,
+                         uasn1_item_t *date, uasn1_item_t *extensions);
 
 /**
  * @function uasn1_crl_reason

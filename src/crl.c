@@ -28,14 +28,13 @@ uasn1_item_t *uasn1_crl_tbs_new(uasn1_item_t *signature,
     return tbs;
 }
 
-void uasn1_crl_add_entry(uasn1_item_t *list, int cert,
-                         char *date, uasn1_item_t *extensions)
+void uasn1_crl_add_entry(uasn1_item_t *list, uasn1_item_t *serial,
+                         uasn1_item_t *date, uasn1_item_t *extensions)
 {
     uasn1_item_t *revoked = uasn1_sequence_new(3);
 
-    uasn1_add(revoked, uasn1_integer_new(cert));
-    uasn1_add(revoked, uasn1_generalized_time_new
-              ((unsigned char *)date, strlen(date)));
+    uasn1_add(revoked, serial);
+    uasn1_add(revoked, date);
     uasn1_add(revoked, extensions);
     uasn1_add(list, revoked);
 }

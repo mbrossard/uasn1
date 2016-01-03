@@ -8,9 +8,9 @@ libuasn1_a_SOURCES = src/uasn1.c \
 	src/base64.c \
 	src/crl.c \
 	src/crypto/cryptoki.c \
+	src/crypto/key.c \
 	src/decode.c \
 	src/encode.c \
-	src/key.c \
 	src/ocsp.c \
 	src/oids.c \
 	src/oidsdb.c \

@@ -1,8 +1,8 @@
 
 #include "config.h"
 #include "uasn1.h"
-#include "key.h"
-#include "cryptoki.h"
+#include "crypto/key.h"
+#include "crypto/cryptoki.h"
 
 #ifdef HAVE_OPENSSL
 #include <openssl/rsa.h>

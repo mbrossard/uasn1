@@ -7,7 +7,7 @@ noinst_LIBRARIES = libuasn1.a
 libuasn1_a_SOURCES = src/uasn1.c \
 	src/base64.c \
 	src/crl.c \
-	src/cryptoki.c \
+	src/crypto/cryptoki.c \
 	src/decode.c \
 	src/encode.c \
 	src/key.c \

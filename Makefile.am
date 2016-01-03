@@ -38,7 +38,7 @@ tests_test_cryptoki_SOURCES = tests/test_cryptoki.c \
 
 tests_test_cryptoki_LDADD = libuasn1.a
 
-test: $(noinst_PROGRAMS)
+test: clean-local $(noinst_PROGRAMS) \
 	./tests/test_asn1
 	./tests/test_base64
 	./tests/test_cryptoki

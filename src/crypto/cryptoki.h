@@ -45,7 +45,7 @@
 #define NULL_PTR 0
 #endif
 
-#include <pkcs11.h>
+#include "pkcs11.h"
 #include <getopt.h>
 
 #ifdef __cplusplus

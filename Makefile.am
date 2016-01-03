@@ -42,3 +42,6 @@ test: $(noinst_PROGRAMS)
 	./tests/test_asn1
 	./tests/test_base64
 	./tests/test_cryptoki
+
+clean-local:
+	rm -f tests/*.der tests/*.pem tests/*.db

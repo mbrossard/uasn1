@@ -7,7 +7,6 @@
 
 #include "uasn1.h"
 #include "crypto.h"
-#include "cryptoki.h"
 
 int request_test(uasn1_key_t *private, uasn1_key_t *public,
                  uasn1_digest_t digest, char *name);

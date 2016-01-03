@@ -5,8 +5,8 @@
  * Copyright © 2015 Mathias Brossard
  */
 
-#include "cryptoki.h"
 #include "uasn1.h"
+#include "crypto/cryptoki.h"
 
 typedef enum {
     UASN1_RSA   = 0x0,

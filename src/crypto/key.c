@@ -13,12 +13,6 @@
 
 #include <string.h>
 
-{
-
-
-    }
-}
-
 uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e)
 {
     uasn1_item_t *key = uasn1_sequence_new(2);

@@ -8,5 +8,6 @@
 #include "crypto.h"
 
 uasn1_item_t *uasn1_key_pkcs11_get_asn1_public_key(uasn1_key_t *key);
+uasn1_item_t *uasn1_key_pkcs11_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer);
 
 #endif

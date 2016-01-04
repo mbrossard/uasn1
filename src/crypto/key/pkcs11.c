@@ -1,6 +1,8 @@
 #include "config.h"
 #include "uasn1.h"
 #include "crypto/cryptoki.h"
+#include "crypto/key.h"
+#include "crypto/key/pkcs11.h"
 
 #include <string.h>
 
@@ -128,4 +130,83 @@ uasn1_item_t *uasn1_key_pkcs11_get_asn1_public_key(uasn1_key_t *key)
     free(attrs[1].pValue);
 
     return k;
+}
+
+uasn1_item_t *uasn1_key_pkcs11_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
+{
+    CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
+    CK_BYTE hash[64], signature[1024], *to_sign;
+    CK_ULONG hlen = sizeof(hash), slen = sizeof(signature);
+    uasn1_item_t *sig, *padding = uasn1_sequence_new(2), *algoid = uasn1_sequence_new(2);
+    CK_RV rc;
+    uasn1_buffer_t *padbuf = uasn1_buffer_new(128);
+
+    switch (digest) {
+        case UASN1_SHA1:
+            mechanism.mechanism = CKM_SHA_1;
+            break;
+        case UASN1_SHA256:
+            mechanism.mechanism = CKM_SHA256;
+            break;
+        case UASN1_SHA384:
+            mechanism.mechanism = CKM_SHA384;
+            break;
+        case UASN1_SHA512:
+            mechanism.mechanism = CKM_SHA512;
+            break;
+    }
+    uasn1_add(algoid, uasn1_digest_oid(digest));
+ 
+    rc = key->pkcs11.functions->C_DigestInit(key->pkcs11.session, &mechanism);
+    if (rc != CKR_OK) {
+        printf("Error DigestInit %lu\n", rc);
+        return NULL;
+    }
+
+    rc = key->pkcs11.functions->C_Digest(key->pkcs11.session, buffer->buffer, buffer->current, hash, &hlen);
+    if (rc != CKR_OK) {
+        printf("Error Digest %lu\n", rc);
+        return NULL;
+    }
+
+    if (key->pkcs11.type == CKK_RSA) {
+        mechanism.mechanism = CKM_RSA_PKCS;
+
+        uasn1_add(algoid, uasn1_item_new(uasn1_null_type));
+        uasn1_add(padding, algoid);
+        uasn1_add(padding, uasn1_octet_string_new(hash, hlen));
+        uasn1_encode(padding, padbuf);
+        to_sign = padbuf->buffer;
+        hlen = padbuf->current;
+    } else if (key->pkcs11.type == CKK_EC) {
+        mechanism.mechanism = CKM_ECDSA;
+        to_sign = hash;
+    }
+
+    rc = key->pkcs11.functions->C_SignInit(key->pkcs11.session, &mechanism, key->pkcs11.object);
+    if (rc != CKR_OK) {
+        printf("Error SignInit %lu\n", rc);
+        return NULL;
+    }
+
+    rc = key->pkcs11.functions->C_Sign(key->pkcs11.session, to_sign, hlen, signature, &slen);
+    if (rc != CKR_OK) {
+        printf("Error Sign %lu\n", rc);
+        return NULL;
+    }
+
+    if (key->pkcs11.type == CKK_RSA) {
+        sig  = uasn1_bit_string_new(signature, slen, 0);
+    } else if (key->pkcs11.type == CKK_EC) {
+        uasn1_buffer_t *buf = uasn1_buffer_new(256);
+        uasn1_item_t *ec_sig = uasn1_sequence_new(2);
+        uasn1_add(ec_sig, uasn1_large_integer_new(uasn1_integer_type, signature, slen / 2));
+        uasn1_add(ec_sig, uasn1_large_integer_new(uasn1_integer_type, signature + slen /2, slen / 2));
+        uasn1_encode(ec_sig, buf);
+        sig = uasn1_bit_string_new(buf->buffer, buf->current, 0);
+        uasn1_buffer_free(buf);
+        uasn1_free(ec_sig);
+    }
+
+    return sig;
 }

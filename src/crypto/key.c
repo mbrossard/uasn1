@@ -67,7 +67,7 @@ uasn1_key_t *uasn1_load_pkcs11_key(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
     return NULL;
 }
 
-static uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e)
+uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e)
 {
     uasn1_item_t *key = uasn1_sequence_new(2);
     uasn1_buffer_t *buf = uasn1_buffer_new(64);
@@ -82,7 +82,7 @@ static uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e)
     return k;
 }
 
-static uasn1_item_t *uasn1_asn1_ec_public_key(uasn1_item_t *params, uasn1_item_t *point)
+uasn1_item_t *uasn1_asn1_ec_public_key(uasn1_item_t *params, uasn1_item_t *point)
 {
     unsigned int ecPublicKey[] = { 1, 2, 840, 10045, 2, 1 };
     uasn1_item_t *info = uasn1_sequence_new(2);

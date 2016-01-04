@@ -3,6 +3,7 @@
 #include "uasn1.h"
 #include "crypto/key.h"
 #include "crypto/cryptoki.h"
+#include "crypto/key/pkcs11.h"
 
 #ifdef HAVE_OPENSSL
 #include <openssl/rsa.h>
@@ -51,71 +52,9 @@ uasn1_item_t *uasn1_key_get_asn1_public_key(uasn1_key_t *key)
 {
     uasn1_item_t *k = NULL;
 
+
     if(key->provider == UASN1_PKCS11) {
-        CK_ATTRIBUTE attrs[2];
-        CK_RV        rc;
-
-        if (key->pkcs11.type == CKK_RSA) {
-            uasn1_item_t *n, *e;
-
-            pkcs11_fill_attribute(&attrs[0], CKA_PUBLIC_EXPONENT, NULL, 0);
-            pkcs11_fill_attribute(&attrs[1], CKA_MODULUS,         NULL, 0);
-
-            if ((rc = key->pkcs11.functions->C_GetAttributeValue
-                 (key->pkcs11.session, key->pkcs11.object, attrs, 2)) != CKR_OK) {
-                goto done;
-            }
-
-            if (((attrs[0].pValue = malloc(attrs[0].ulValueLen)) == NULL) ||
-                ((attrs[1].pValue = malloc(attrs[1].ulValueLen)) == NULL)) {
-                rc = CKR_HOST_MEMORY;
-                goto done;
-            }
-
-            if ((rc = key->pkcs11.functions->C_GetAttributeValue
-                 (key->pkcs11.session, key->pkcs11.object, attrs, 2)) != CKR_OK) {
-                goto done;
-            }
-
-            e = uasn1_string_new(uasn1_integer_type, attrs[0].pValue, attrs[0].ulValueLen);
-            n = uasn1_string_new(uasn1_integer_type, attrs[1].pValue, attrs[1].ulValueLen);
-            k = uasn1_asn1_rsa_public_key(n, e);
-            attrs[0].pValue = NULL;
-            attrs[1].pValue = NULL;
-        } else if (key->pkcs11.type == CKK_EC) {
-            uasn1_item_t *params, *point;
- 
-            pkcs11_fill_attribute(&attrs[0], CKA_EC_PARAMS, NULL, 0);
-            pkcs11_fill_attribute(&attrs[1], CKA_EC_POINT,  NULL, 0);
-
-            if ((rc = key->pkcs11.functions->C_GetAttributeValue
-                 (key->pkcs11.session, key->pkcs11.object, attrs, 2)) != CKR_OK) {
-                goto done;
-            }
-
-            if (((attrs[0].pValue = malloc(attrs[0].ulValueLen)) == NULL) ||
-                ((attrs[1].pValue = malloc(attrs[1].ulValueLen)) == NULL)) {
-                rc = CKR_HOST_MEMORY;
-                goto done;
-            }
-
-            if ((rc = key->pkcs11.functions->C_GetAttributeValue
-                 (key->pkcs11.session, key->pkcs11.object, attrs, 2)) != CKR_OK) {
-                goto done;
-            }
-
-            params = uasn1_string_new(uasn1_oid_type, attrs[0].pValue, attrs[0].ulValueLen);
-            params->tag.flags = uasn1_preencoded_type;
-            point = uasn1_bit_string_new(attrs[1].pValue + 2, attrs[1].ulValueLen - 2, 0);
-
-            k = uasn1_asn1_ec_public_key(params, point);
-            attrs[0].pValue = NULL;
-            attrs[1].pValue = NULL;
-        }
-
-    done:
-        free(attrs[0].pValue);
-        free(attrs[1].pValue);
+        k = uasn1_key_pkcs11_get_asn1_public_key(key);
     }
 
     return k;

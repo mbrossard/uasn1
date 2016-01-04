@@ -98,8 +98,8 @@ uasn1_item_t *uasn1_dn_element(char *name, char *value)
 {
     uasn1_item_t *set = uasn1_set_new(1);
     uasn1_item_t *sequence = uasn1_sequence_new(2);
-    uasn1_item_t *val = uasn1_printable_string_new((unsigned char *)value,
-												   strlen(value));
+    uasn1_item_t *val = uasn1_utf8_string_new((unsigned char *)value,
+                                              strlen(value));
     uasn1_add(sequence, uasn1_get_oid_by_name(name));
     uasn1_add(sequence, val);
     uasn1_add(set, sequence);

@@ -210,3 +210,15 @@ uasn1_item_t *uasn1_key_pkcs11_x509_sign(uasn1_key_t *key, uasn1_digest_t digest
 
     return sig;
 }
+
+uasn1_crypto_t *uasn1_pkcs11_crypto(CK_FUNCTION_LIST_PTR functions, CK_SLOT_ID slot)
+{
+    uasn1_crypto_t *crypto = malloc(sizeof(uasn1_crypto_t));
+    if(crypto) {
+        crypto->provider = UASN1_PKCS11;
+        crypto->pkcs11.functions = functions;
+        crypto->pkcs11.slot = slot;
+    }
+
+    return crypto;
+}

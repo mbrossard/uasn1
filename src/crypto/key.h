@@ -43,6 +43,8 @@ typedef struct _uasn1_crypto_t  {
     };
 } uasn1_crypto_t;
 
+uasn1_crypto_t *uasn1_pkcs11_crypto(CK_FUNCTION_LIST_PTR functions, CK_SLOT_ID slot);
+
 uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e);
 uasn1_item_t *uasn1_asn1_ec_public_key(uasn1_item_t *params, uasn1_item_t *point);
 

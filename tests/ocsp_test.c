@@ -13,7 +13,6 @@
 int ocsp_request_test(uasn1_key_t *key, char *ca, char *name)
 {
     uasn1_item_t *list = uasn1_sequence_new(1);
-    uasn1_item_t *tbs;
     uasn1_item_t *req;
     uasn1_buffer_t *crt1 = uasn1_buffer_new(64);
     uasn1_buffer_t *crt2 = uasn1_buffer_new(64);

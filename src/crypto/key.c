@@ -3,7 +3,7 @@
 #include "uasn1.h"
 #include "crypto/key.h"
 #include "crypto/cryptoki.h"
-#include "crypto/key/pkcs11.h"
+#include "crypto/pkcs11/key.h"
 
 #ifdef HAVE_OPENSSL
 #include <openssl/rsa.h>

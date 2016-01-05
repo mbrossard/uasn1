@@ -45,7 +45,6 @@ int ocsp_response_test(uasn1_key_t *private, uasn1_digest_t digest, char *name)
     uasn1_item_t *responsedata;
     uasn1_item_t *responselist;
     uasn1_item_t *basicresponse;
-    uasn1_item_t *responsebytes;
     uasn1_item_t *ocsp;
     uasn1_item_t *cert, *certs, *certbin;
     unsigned int i;

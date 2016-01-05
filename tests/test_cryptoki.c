@@ -29,8 +29,7 @@ int main(int argc, char **argv)
 
     CK_SESSION_HANDLE h_session;
     CK_FUNCTION_LIST  *funcs = NULL;
-    CK_SLOT_ID        *pslots = NULL;
-    CK_ULONG          nslots, islot, pin_len = strlen(pin);
+    CK_ULONG          pin_len = strlen(pin);
     CK_RV             rc;
 
 

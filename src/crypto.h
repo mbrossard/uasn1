@@ -28,6 +28,9 @@ typedef enum {
 /* Opaque type for keys */
 typedef struct _uasn1_key_t uasn1_key_t;
 
+/* Opaque type for cryptographic context */
+typedef struct _uasn1_crypto_t uasn1_crypto_t;
+
 uasn1_key_t *uasn1_load_pkcs11_key(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
                                    CK_OBJECT_CLASS class, CK_BYTE_PTR label);
 

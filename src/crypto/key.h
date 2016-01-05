@@ -33,6 +33,16 @@ typedef struct _uasn1_key_t {
 	};
 } _uasn1_key_t;
 
+typedef struct _uasn1_crypto_t  {
+	uasn1_crypto_provider_t provider;
+	union {
+        struct {
+            CK_FUNCTION_LIST_PTR functions;
+            CK_SLOT_ID slot;
+        } pkcs11;
+    };
+} uasn1_crypto_t;
+
 uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e);
 uasn1_item_t *uasn1_asn1_ec_public_key(uasn1_item_t *params, uasn1_item_t *point);
 

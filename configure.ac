@@ -23,6 +23,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PROG_RANLIB
 AC_CHECK_LIB(dl, dlsym)
 
+AX_APPEND_COMPILE_FLAGS([ -Wall -pedantic --std=c11 ])
+
 AC_ARG_WITH(
         [pkcs11-module],
         [AS_HELP_STRING([--with-pkcs11-module], [Default PKCS#11 module])],

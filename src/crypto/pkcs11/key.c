@@ -118,7 +118,7 @@ uasn1_item_t *uasn1_key_pkcs11_get_asn1_public_key(uasn1_key_t *key)
 
         params = uasn1_string_new(uasn1_oid_type, attrs[0].pValue, attrs[0].ulValueLen);
         params->tag.flags = uasn1_preencoded_type;
-        point = uasn1_bit_string_new(attrs[1].pValue + 2, attrs[1].ulValueLen - 2, 0);
+        point = uasn1_bit_string_new((CK_BYTE_PTR)attrs[1].pValue + 2, attrs[1].ulValueLen - 2, 0);
 
         k = uasn1_asn1_ec_public_key(params, point);
         attrs[0].pValue = NULL;

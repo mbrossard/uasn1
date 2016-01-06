@@ -185,6 +185,8 @@ void hexdump(unsigned char *buffer, int size) {
 #endif
 }
 
+#include <stdlib.h>
+
 int main() {
     char *buf1, *buf2, *buf3;
     int i, j;

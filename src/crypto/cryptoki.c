@@ -344,7 +344,7 @@ CK_RV pkcs11_login_session(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
  end:
     if (rc != CKR_OK) {
         /* We want to keep the original error code */
-        CK_RV r = funcs->C_CloseSession(h_session);
+        funcs->C_CloseSession(h_session);
     } else if(session) {
         *session = h_session;
     }

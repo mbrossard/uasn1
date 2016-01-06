@@ -67,32 +67,11 @@ uasn1_item_t *uasn1_key_get_asn1_public_key_info(uasn1_key_t *key)
 
 uasn1_item_t *uasn1_key_get_key_identifier(uasn1_key_t *key)
 {
-    uasn1_buffer_t *buf = uasn1_buffer_new(4096);
-    uasn1_item_t *public = uasn1_key_get_asn1_public_key(key);
     uasn1_item_t *ki = NULL;
 
-    uasn1_encode(public, buf);
-
     if(key->provider == UASN1_PKCS11) {
-        CK_BYTE hash[20];
-        CK_MECHANISM mechanism = { CKM_SHA_1, NULL_PTR, 0 };
-        CK_ULONG len;
-        CK_RV rc;
-
-        rc = key->pkcs11.functions->C_DigestInit(key->pkcs11.session, &mechanism);
-        if (rc != CKR_OK) {
-            goto end;
-        }
-        rc = key->pkcs11.functions->C_Digest(key->pkcs11.session, buf->buffer, buf->current, hash, &len);
-        if (rc != CKR_OK) {
-            goto end;
-        }
-        ki = uasn1_octet_string_new(hash, sizeof(hash));
+        ki = uasn1_key_pkcs11_get_key_identifier(key);
     }
-
- end:
-    uasn1_buffer_free(buf);
-    uasn1_free(public);
 
     return ki;
 }

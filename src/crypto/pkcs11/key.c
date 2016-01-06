@@ -152,6 +152,36 @@ uasn1_item_t *uasn1_key_pkcs11_get_asn1_public_key(uasn1_key_t *key)
     return k;
 }
 
+uasn1_item_t *uasn1_key_pkcs11_get_key_identifier(uasn1_key_t *key)
+{
+    uasn1_buffer_t *buf = uasn1_buffer_new(4096);
+    uasn1_item_t *public = uasn1_key_get_asn1_public_key(key);
+    uasn1_item_t *ki = NULL;
+    CK_BYTE hash[20];
+    CK_MECHANISM mechanism = { CKM_SHA_1, NULL_PTR, 0 };
+    CK_ULONG len;
+    CK_RV rc;
+
+    uasn1_encode(public, buf);
+
+    rc = key->pkcs11.functions->C_DigestInit(key->pkcs11.session, &mechanism);
+    if (rc != CKR_OK) {
+        goto end;
+    }
+    rc = key->pkcs11.functions->C_Digest(key->pkcs11.session, buf->buffer, buf->current, hash, &len);
+    if (rc != CKR_OK) {
+        goto end;
+    }
+
+    ki = uasn1_octet_string_new(hash, len);
+
+ end:
+    uasn1_buffer_free(buf);
+    uasn1_free(public);
+
+    return ki;
+}
+
 uasn1_item_t *uasn1_key_pkcs11_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };

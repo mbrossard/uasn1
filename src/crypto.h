@@ -25,6 +25,11 @@ typedef enum {
     UASN1_OPENSSL
 } uasn1_crypto_provider_t;
 
+typedef enum {
+    UASN1_PUBLIC  = 0x0,
+    UASN1_PRIVATE = 0x1
+} uasn1_key_type_t;
+
 /* Opaque type for keys */
 typedef struct _uasn1_key_t uasn1_key_t;
 

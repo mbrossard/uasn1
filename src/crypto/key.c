@@ -59,19 +59,7 @@ uasn1_item_t *uasn1_key_get_asn1_public_key_info(uasn1_key_t *key)
     uasn1_item_t *key_info = NULL;
 
     if(key->provider == UASN1_PKCS11) {
-        uasn1_item_t *public = uasn1_key_get_asn1_public_key(key);
-
-        if (key->pkcs11.type == CKK_RSA) {
-            key_info = uasn1_sequence_new(2);
-            uasn1_item_t *info = uasn1_sequence_new(2);
-            unsigned int rsaEncryption[] = { 1, 2, 840, 113549, 1, 1, 1 };
-            uasn1_add(info, uasn1_oid_new(rsaEncryption, 7));
-            uasn1_add(info, uasn1_item_new(uasn1_null_type));
-            uasn1_add(key_info, info);
-            uasn1_add(key_info, public);
-        } else if (key->pkcs11.type == CKK_EC) {
-            key_info = public;
-        }
+        key_info = uasn1_key_pkcs11_get_asn1_public_key_info(key);
     }
 
     return key_info;

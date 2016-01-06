@@ -231,6 +231,17 @@ uasn1_item_t *uasn1_key_pkcs11_x509_sign(uasn1_key_t *key, uasn1_digest_t digest
     return sig;
 }
 
+uasn1_asymetric_t uasn1_key_pkcs11_type(uasn1_key_t *key)
+{
+    if (key->pkcs11.type == CKK_RSA) {
+        return UASN1_RSA;
+    } else if (key->pkcs11.type == CKK_EC) {
+        return UASN1_ECDSA;
+    }
+
+    return UASN1_RSA;
+}
+
 uasn1_crypto_t *uasn1_pkcs11_crypto(CK_FUNCTION_LIST_PTR functions, CK_SLOT_ID slot)
 {
     uasn1_crypto_t *crypto = malloc(sizeof(uasn1_crypto_t));

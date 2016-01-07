@@ -148,7 +148,7 @@ uasn1_item_t *uasn1_key_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1
 
 uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest)
 {
-    uasn1_item_t *algoid;
+    uasn1_item_t *algoid = NULL;
     uasn1_asymetric_t type = -1;
     unsigned int sha1withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 5 };
     unsigned int sha256withRSAEncryption[7] = { 1, 2, 840, 113549, 1, 1, 11 };
@@ -192,7 +192,7 @@ uasn1_item_t *uasn1_x509_algorithm(uasn1_key_t *key, uasn1_digest_t digest)
 
 uasn1_item_t *uasn1_x509_algorithm2(uasn1_key_t *key, uasn1_digest_t digest)
 {
-    uasn1_item_t *algoid;
+    uasn1_item_t *algoid = NULL;
     uasn1_asymetric_t type = -1;
     unsigned int rsaEncryption[7] = { 1, 2, 840, 113549, 1, 1, 1 };
     unsigned int ecdsaWithSHA256[7] = { 1, 2, 840, 10045, 4, 3, 2 };

@@ -25,7 +25,7 @@
 CK_FUNCTION_LIST  *pkcs11_get_function_list(const char *param)
 {
     CK_FUNCTION_LIST  *funcs;
-    CK_RV            (*get_fun)();
+    CK_RV            (*get_fun)(), rc;
     void              *d;
     const char        *e = param ? param : getenv("PKCS11_LIBRARY");
     e = e ? e : DEFAULT_PKCS11_MODULE;
@@ -40,7 +40,7 @@ CK_FUNCTION_LIST  *pkcs11_get_function_list(const char *param)
         fprintf(stdout, "Symbol lookup failed\n");
         return NULL;
     }
-    CK_RV rc = get_fun(&funcs);
+    rc = get_fun(&funcs);
     if (rc != CKR_OK) {
         funcs = NULL;
     } else if(funcs == NULL) {

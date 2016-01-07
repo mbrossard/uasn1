@@ -35,12 +35,10 @@ struct _uasn1_key_t {
 
 struct _uasn1_crypto_t  {
 	uasn1_crypto_provider_t provider;
-	union {
-        struct {
-            CK_FUNCTION_LIST_PTR functions;
-            CK_SLOT_ID slot;
-        } pkcs11;
-    };
+    struct {
+        CK_FUNCTION_LIST_PTR functions;
+        CK_SLOT_ID slot;
+    } pkcs11;
 };
 
 uasn1_crypto_t *uasn1_pkcs11_crypto(CK_FUNCTION_LIST_PTR functions, CK_SLOT_ID slot);

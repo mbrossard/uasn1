@@ -12,14 +12,13 @@ int x509_self_test(uasn1_key_t *private, uasn1_key_t *public,
     uasn1_buffer_t *buffer = uasn1_buffer_new(64);
     uasn1_item_t *dn = uasn1_sequence_new(2);
     uasn1_item_t *extensions = uasn1_sequence_new(1);
-    uasn1_item_t *tbs, *public_key;
+    uasn1_item_t *tbs;
     unsigned int keyUsage = keyCertSign | cRLSign;
     FILE *f = NULL;
     char fname[64];
     uasn1_item_t *notBefore = uasn1_get_utc_time(0);
     uasn1_item_t *notAfter = uasn1_get_utc_time(365 * 86400);
 
-    public_key = uasn1_key_get_asn1_public_key(public);
 
     /* Building DN */
     uasn1_add(dn, uasn1_dn_element("commonName", "Test"));
@@ -74,7 +73,7 @@ int x509_sign_test(uasn1_key_t *private, uasn1_key_t *public,
     uasn1_buffer_t *buffer = uasn1_buffer_new(64);
     uasn1_item_t *dn_subject = uasn1_sequence_new(2), *dn_issuer;
     uasn1_item_t *extensions = uasn1_sequence_new(1);
-    uasn1_item_t *ca_crt, *tbs, *public_key;
+    uasn1_item_t *ca_crt, *tbs;
     unsigned int keyUsage = digitalSignature;
     FILE *f = NULL;
     char fname[64];
@@ -84,8 +83,6 @@ int x509_sign_test(uasn1_key_t *private, uasn1_key_t *public,
 	uasn1_load_buffer(ca_buf, fname);
     ca_crt = uasn1_decode(ca_buf);
     dn_issuer = uasn1_get(uasn1_get(ca_crt, 0), 3);
-
-    public_key = uasn1_key_get_asn1_public_key(public);
 
     /* Building DN */
     uasn1_add(dn_subject, uasn1_dn_element("commonName", "Test"));

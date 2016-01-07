@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int ocsp_request_test(uasn1_key_t *key, char *ca, char *name)
+int ocsp_request_test(uasn1_crypto_t *crypto, char *ca, char *name)
 {
     uasn1_item_t *list = uasn1_sequence_new(1);
     uasn1_item_t *req;
@@ -24,7 +24,7 @@ int ocsp_request_test(uasn1_key_t *key, char *ca, char *name)
     sprintf(fname, "%s.der", ca);
 	uasn1_load_buffer(crt2, fname);
 
-	uasn1_add(list, uasn1_ocsp_single_request(key, crt1, crt2, NULL));
+	uasn1_add(list, uasn1_ocsp_single_request(crypto, crt1, crt2, NULL));
 
 	req = uasn1_ocsp_request(0, NULL, list, NULL);
 

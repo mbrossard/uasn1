@@ -8,6 +8,7 @@
 #include "crypto.h"
 
 uasn1_asymetric_t uasn1_key_pkcs11_type(uasn1_key_t *key);
+uasn1_key_t *uasn1_key_pkcs11_load(uasn1_crypto_t *crypto, uasn1_key_type_t type, char *label);
 uasn1_item_t *uasn1_key_pkcs11_get_asn1_public_key_info(uasn1_key_t *key);
 uasn1_item_t *uasn1_key_pkcs11_get_asn1_public_key(uasn1_key_t *key);
 uasn1_item_t *uasn1_key_pkcs11_get_key_identifier(uasn1_key_t *key);

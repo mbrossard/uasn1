@@ -32,7 +32,7 @@ uasn1_item_t *uasn1_ocsp_request(unsigned int version,
     return wrap;
 }
 
-uasn1_item_t *uasn1_ocsp_single_request(uasn1_key_t *key,
+uasn1_item_t *uasn1_ocsp_single_request(uasn1_crypto_t *crypto,
                                         uasn1_buffer_t *certificate,
                                         uasn1_buffer_t *ca_certificate,
                                         uasn1_item_t *extensions)
@@ -49,8 +49,8 @@ uasn1_item_t *uasn1_ocsp_single_request(uasn1_key_t *key,
         uasn1_item_t *public_key = uasn1_x509_get_pubkey_value(ca_cert_tbs);
 
         uasn1_add(certid, uasn1_digest_oid(UASN1_SHA1));
-        uasn1_add(certid, uasn1_hash_to_octet_string(key, UASN1_SHA1, issuer_name));
-        uasn1_add(certid, uasn1_hash_to_octet_string(key, UASN1_SHA1, public_key));
+        uasn1_add(certid, uasn1_hash_to_octet_string(crypto, UASN1_SHA1, issuer_name));
+        uasn1_add(certid, uasn1_hash_to_octet_string(crypto, UASN1_SHA1, public_key));
         uasn1_add(certid, uasn1_x509_get_serial(cert_tbs));
 
         uasn1_add(request, certid);
@@ -147,12 +147,12 @@ uasn1_item_t *uasn1_ocsp_responder_id_name(uasn1_item_t *certificate)
                          uasn1_context_specific_tag, 1, uasn1_explicit_tag);
 }
 
-uasn1_item_t *uasn1_ocsp_responder_id_key(uasn1_key_t *key, uasn1_item_t *certificate)
+uasn1_item_t *uasn1_ocsp_responder_id_key(uasn1_crypto_t *crypto, uasn1_item_t *certificate)
 {
     uasn1_item_t *cert_tbs = uasn1_x509_get_tbs(certificate);
     uasn1_item_t *public_key = uasn1_x509_get_pubkey_value(cert_tbs);
     
-    return uasn1_set_tag(uasn1_hash_to_octet_string(key, UASN1_SHA1, public_key),
+    return uasn1_set_tag(uasn1_hash_to_octet_string(crypto, UASN1_SHA1, public_key),
                          uasn1_context_specific_tag, 2, uasn1_explicit_tag);
 }
 

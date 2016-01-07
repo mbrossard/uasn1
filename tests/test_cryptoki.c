@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "crypto.h"
+#include "crypto/key.h"
 #include "tests.h"
 #include "x509.h"
 #include "pkix.h"
@@ -67,10 +68,11 @@ int main(int argc, char **argv)
         return rc;
     }
 
-    uasn1_key_t *rsa_prv = uasn1_load_pkcs11_key(funcs, slot, CKO_PRIVATE_KEY, rsa_label);
-    uasn1_key_t *rsa_pub = uasn1_load_pkcs11_key(funcs, slot, CKO_PUBLIC_KEY,  rsa_label);
-    uasn1_key_t *ec_prv =  uasn1_load_pkcs11_key(funcs, slot, CKO_PRIVATE_KEY, ec_label);
-    uasn1_key_t *ec_pub =  uasn1_load_pkcs11_key(funcs, slot, CKO_PUBLIC_KEY,  ec_label);
+    uasn1_crypto_t *crypto = uasn1_pkcs11_crypto(funcs, slot);
+    uasn1_key_t *rsa_prv = uasn1_key_load(crypto, UASN1_PRIVATE, (char *)rsa_label);
+    uasn1_key_t *rsa_pub = uasn1_key_load(crypto, UASN1_PUBLIC,  (char *)rsa_label);
+    uasn1_key_t *ec_prv =  uasn1_key_load(crypto, UASN1_PRIVATE, (char *)ec_label);
+    uasn1_key_t *ec_pub =  uasn1_key_load(crypto, UASN1_PUBLIC,  (char *)ec_label);
 
     if(!(rsa_prv && rsa_pub && ec_prv && ec_pub)) {
         printf("RSA private (%p), public (%p)\n", rsa_prv, rsa_pub);
@@ -98,21 +100,21 @@ int main(int argc, char **argv)
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
     x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",   "tests/ocsp_ec_crt");
 
-    ocsp_request_test(rsa_pub, "tests/rsa1_ca", "tests/ocsp_rsa1_crt");
-    ocsp_request_test(rsa_pub, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
-    ocsp_request_test(ec_pub,  "tests/ec_ca",   "tests/ocsp_ec_crt");
+    ocsp_request_test(crypto, "tests/rsa1_ca", "tests/ocsp_rsa1_crt");
+    ocsp_request_test(crypto, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
+    ocsp_request_test(crypto, "tests/ec_ca",   "tests/ocsp_ec_crt");
 
     ocsp_response_test(rsa_prv, UASN1_SHA1,   "tests/ocsp_rsa1_crt");
     ocsp_response_test(rsa_prv, UASN1_SHA256, "tests/ocsp_rsa2_crt");
     ocsp_response_test(ec_prv,  UASN1_SHA256, "tests/ocsp_ec_crt");
 
-    tsa_request_test(funcs, slot, UASN1_SHA1,   "tests/rsa1");
-    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/rsa2");
-    tsa_request_test(funcs, slot, UASN1_SHA256, "tests/ec");
+    tsa_request_test(crypto, UASN1_SHA1,   "tests/rsa1");
+    tsa_request_test(crypto, UASN1_SHA256, "tests/rsa2");
+    tsa_request_test(crypto, UASN1_SHA256, "tests/ec");
 
-    tsa_response_test(UASN1_SHA1,   "tests/rsa1", "tests/tsa_rsa1_crt", rsa_prv);
-    tsa_response_test(UASN1_SHA256, "tests/rsa2", "tests/tsa_rsa2_crt", rsa_prv);
-    tsa_response_test(UASN1_SHA256, "tests/ec",   "tests/tsa_ec_crt",   ec_prv);
+    tsa_response_test(UASN1_SHA1,   "tests/rsa1", "tests/tsa_rsa1_crt", crypto, rsa_prv);
+    tsa_response_test(UASN1_SHA256, "tests/rsa2", "tests/tsa_rsa2_crt", crypto, rsa_prv);
+    tsa_response_test(UASN1_SHA256, "tests/ec",   "tests/tsa_ec_crt",   crypto, ec_prv);
 
     rc = funcs->C_Finalize(NULL);
     if (rc != CKR_OK) {

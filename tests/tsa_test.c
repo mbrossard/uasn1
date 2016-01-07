@@ -2,12 +2,10 @@
 #include "utils.h"
 #include "tsa.h"
 
-int tsa_request_test(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
-                     uasn1_digest_t digest, char *name)
+int tsa_request_test(uasn1_crypto_t *crypto, uasn1_digest_t digest, char *name)
 {
     uasn1_buffer_t *buffer = uasn1_buffer_new(1024);
-    uasn1_item_t *hash = uasn1_digest_octet_string(funcs, slot, digest,
-                                                   buffer->buffer, buffer->size);
+    uasn1_item_t *hash = uasn1_digest_octet_string(crypto, digest, buffer->buffer, buffer->size);
     uasn1_item_t *imprint = uasn1_tsa_imprint(digest, hash);
     uasn1_item_t *tsa_request = uasn1_tsa_request(imprint, NULL, NULL, NULL, NULL);
     char fname[64];
@@ -20,7 +18,8 @@ int tsa_request_test(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
     return 0;
 }
 
-int tsa_response_test(uasn1_digest_t digest, char *name, char *crt_path, uasn1_key_t *key)
+int tsa_response_test(uasn1_digest_t digest, char *name, char *crt_path,
+                      uasn1_crypto_t *crypto, uasn1_key_t *key)
 {
     unsigned int foo[7] = { 1, 2, 3, 4, 5, 6, 7 };
     uasn1_buffer_t *crt = uasn1_buffer_new(1024);
@@ -45,7 +44,7 @@ int tsa_response_test(uasn1_digest_t digest, char *name, char *crt_path, uasn1_k
                             NULL,
                             NULL);
 
-    response = uasn1_tsa_response(tstinfo, digest, uasn1_get_utc_time(0), crt, key);
+    response = uasn1_tsa_response(tstinfo, digest, uasn1_get_utc_time(0), crt, crypto, key);
     uasn1_encode(response, tsr);
     sprintf(fname, "%s_tsa_res.der", name);
     uasn1_write_buffer(tsr, fname);

@@ -6,9 +6,11 @@
 
 #include <string.h>
 
-uasn1_key_t *uasn1_load_pkcs11_key(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
-                                   CK_OBJECT_CLASS class, CK_BYTE_PTR label)
+uasn1_key_t *uasn1_key_pkcs11_load(uasn1_crypto_t *crypto, uasn1_key_type_t ktype, char *label)
 {
+    CK_FUNCTION_LIST_PTR funcs = crypto->pkcs11.functions;
+    CK_SLOT_ID slot = crypto->pkcs11.slot;
+    CK_OBJECT_CLASS class;
     CK_SESSION_HANDLE h_session;
     CK_OBJECT_HANDLE  h_object = -1;
     CK_ATTRIBUTE      search[2] = {
@@ -23,6 +25,14 @@ uasn1_key_t *uasn1_load_pkcs11_key(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
     CK_RV             rc;
     uasn1_key_t       *key = NULL;
 
+    if(ktype == UASN1_PUBLIC) {
+        class = CKO_PUBLIC_KEY;
+    } else if(ktype == UASN1_PRIVATE) {
+        class = CKO_PRIVATE_KEY;
+    } else {
+        return NULL;
+    }
+    
     rc = funcs->C_OpenSession(slot, CKF_SERIAL_SESSION | CKF_RW_SESSION,
                               NULL_PTR, NULL_PTR, &h_session);
     if (rc != CKR_OK) {

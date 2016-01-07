@@ -38,7 +38,7 @@ uasn1_item_t *uasn1_ocsp_request(unsigned int version,
                                  uasn1_item_t *list,
                                  uasn1_item_t *extensions);
 
-uasn1_item_t *uasn1_ocsp_single_request(uasn1_key_t *key,
+uasn1_item_t *uasn1_ocsp_single_request(uasn1_crypto_t *crypto,
                                         uasn1_buffer_t *certificate,
                                         uasn1_buffer_t *ca_certificate,
                                         uasn1_item_t *extensions);
@@ -148,7 +148,8 @@ uasn1_item_t *uasn1_ocsp_response_data(int version, uasn1_item_t *id,
  */
 uasn1_item_t *uasn1_ocsp_responder_id_name(uasn1_item_t *certificate);
 
-uasn1_item_t *uasn1_ocsp_responder_id_key(uasn1_key_t *key, uasn1_item_t *certificate);
+uasn1_item_t *uasn1_ocsp_responder_id_key(uasn1_crypto_t *crypto,
+                                          uasn1_item_t *certificate);
 
 /**
  *

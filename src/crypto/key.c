@@ -13,6 +13,15 @@
 
 #include <string.h>
 
+uasn1_key_t *uasn1_key_load(uasn1_crypto_t *crypto, uasn1_key_type_t type, char *label)
+{
+    if(crypto->provider == UASN1_PKCS11) {
+        return uasn1_key_pkcs11_load(crypto, type, label);
+    } else {
+        return NULL;
+    }
+}
+
 uasn1_item_t *uasn1_asn1_rsa_public_key(uasn1_item_t *n, uasn1_item_t *e)
 {
     uasn1_item_t *key = uasn1_sequence_new(2);
@@ -81,65 +90,26 @@ static unsigned int id_sha256[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 1 };
 static unsigned int id_sha384[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 2 };
 static unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
 
-uasn1_item_t *uasn1_digest_octet_string(CK_FUNCTION_LIST_PTR funcs, CK_SLOT_ID slot,
-                                        uasn1_digest_t digest, CK_BYTE_PTR data, CK_ULONG length)
+uasn1_item_t *uasn1_digest_octet_string(uasn1_crypto_t *crypto, uasn1_digest_t digest, void *data, size_t length)
 {
-    CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
-    CK_SESSION_HANDLE h_session;
-    CK_BYTE buf[64], *hash = NULL;
-    CK_ULONG hlen;
-    CK_RV rc;
-
-    switch (digest) {
-        case UASN1_SHA1:
-            mechanism.mechanism = CKM_SHA_1;
-            break;
-        case UASN1_SHA256:
-            mechanism.mechanism = CKM_SHA256;
-            break;
-        case UASN1_SHA384:
-            mechanism.mechanism = CKM_SHA384;
-            break;
-        case UASN1_SHA512:
-            mechanism.mechanism = CKM_SHA512;
-            break;
-    }
-
-    rc = funcs->C_OpenSession(slot, CKF_SERIAL_SESSION,
-                              NULL_PTR, NULL_PTR, &h_session);
-    if (rc != CKR_OK) {
+    if(crypto->provider == UASN1_PKCS11) {
+        return uasn1_digest_octet_string(crypto, digest, data, length);
+    } else {
         return NULL;
     }
-
-    rc = funcs->C_DigestInit(h_session, &mechanism);
-    if (rc != CKR_OK) {
-        return NULL;
-    }
-
-    rc = funcs->C_Digest(h_session, data, length, buf, &hlen);
-    if (rc != CKR_OK) {
-        return NULL;
-    }
-
-    rc = funcs->C_CloseSession(h_session);
-
-    hash = malloc(hlen);
-    memcpy(hash, buf, hlen);
-
-    return uasn1_octet_string_new(hash, hlen);
 }
 
-uasn1_item_t *uasn1_hash_buffer_to_octet_string(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
+uasn1_item_t *uasn1_hash_buffer_to_octet_string(uasn1_crypto_t *crypto, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
-    return uasn1_digest_octet_string(key->pkcs11.functions, key->pkcs11.slot, digest, buffer->buffer, buffer->current);
+    return uasn1_digest_octet_string(crypto, digest, buffer->buffer, buffer->current);
 }
 
-uasn1_item_t *uasn1_hash_to_octet_string(uasn1_key_t *key, uasn1_digest_t digest, uasn1_item_t *item)
+uasn1_item_t *uasn1_hash_to_octet_string(uasn1_crypto_t *crypto, uasn1_digest_t digest, uasn1_item_t *item)
 {
     uasn1_item_t *hash = NULL;
     uasn1_buffer_t *buffer = uasn1_buffer_new(64);
     uasn1_encode(item, buffer);
-    hash = uasn1_digest_octet_string(key->pkcs11.functions, key->pkcs11.slot, digest, buffer->buffer, buffer->current);
+    hash = uasn1_digest_octet_string(crypto, digest, buffer->buffer, buffer->current);
     uasn1_buffer_free(buffer);
     return hash;
 }

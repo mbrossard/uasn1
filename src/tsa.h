@@ -141,6 +141,7 @@ uasn1_item_t *uasn1_tsa_response(uasn1_item_t *tstinfo,
                                  uasn1_digest_t digest,
                                  uasn1_item_t *time,
                                  uasn1_buffer_t *crt,
+                                 uasn1_crypto_t *crypto,
                                  uasn1_key_t *key);
 
 uasn1_item_t *uasn1_tsa_attribute(uasn1_item_t *oid,

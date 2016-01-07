@@ -153,6 +153,7 @@ uasn1_item_t *uasn1_tsa_response(uasn1_item_t *tstinfo,
                                  uasn1_digest_t digest,
                                  uasn1_item_t *time,
                                  uasn1_buffer_t *crt,
+                                 uasn1_crypto_t *crypto,
                                  uasn1_key_t *key)
 {
     unsigned int id_ct_TSTInfo[9] = { 1, 2, 840, 113549, 1, 9, 16, 1, 4 };
@@ -178,7 +179,7 @@ uasn1_item_t *uasn1_tsa_response(uasn1_item_t *tstinfo,
                                               uasn1_context_specific_tag,
                                               0, uasn1_explicit_tag));
 
-    crthash = uasn1_hash_buffer_to_octet_string(key, digest, crt);
+    crthash = uasn1_hash_buffer_to_octet_string(crypto, digest, crt);
     x509 = uasn1_decode(crt);
     dn = uasn1_x509_get_issuer(uasn1_x509_get_tbs(x509));
     serial = uasn1_x509_get_serial(uasn1_x509_get_tbs(x509));
@@ -196,7 +197,7 @@ uasn1_item_t *uasn1_tsa_response(uasn1_item_t *tstinfo,
 
     uasn1_add(signedattrs,
               uasn1_tsa_attribute(uasn1_oid_new(idMessageDigest, 7),
-                                  uasn1_hash_to_octet_string(key, digest, to_digest)));
+                                  uasn1_hash_to_octet_string(crypto, digest, to_digest)));
 
     if(crthash && 0) {
         uasn1_item_t *seq1 = uasn1_sequence_new(1);

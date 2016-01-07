@@ -195,7 +195,7 @@ uasn1_item_t *uasn1_key_pkcs11_get_key_identifier(uasn1_key_t *key)
 uasn1_item_t *uasn1_key_pkcs11_x509_sign(uasn1_key_t *key, uasn1_digest_t digest, uasn1_buffer_t *buffer)
 {
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
-    CK_BYTE hash[64], signature[1024], *to_sign;
+    CK_BYTE hash[64], signature[1024], *to_sign = NULL;
     CK_ULONG hlen = sizeof(hash), slen = sizeof(signature);
     uasn1_item_t *sig = NULL, *padding = uasn1_sequence_new(2), *algoid = uasn1_sequence_new(2);
     CK_RV rc;

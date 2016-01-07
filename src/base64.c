@@ -190,7 +190,7 @@ void hexdump(unsigned char *buffer, int size) {
 int main() {
     char *buf1, *buf2, *buf3;
     int i, j;
-    long l;
+    long l = 0;
     unsigned int msize = 4096, size;
     unsigned int s2, s3;
 

@@ -44,6 +44,7 @@ int main(int argc, char **argv)
         return rc;
     }
 
+    fprintf(stderr, "Initialize token\n");
     rc = pkcs11_init_token(funcs, slot, (CK_UTF8CHAR_PTR) label,
                            (CK_UTF8CHAR_PTR) pin, pin_len);
     if (rc != CKR_OK) {
@@ -56,6 +57,7 @@ int main(int argc, char **argv)
         return rc;
     }
 
+    fprintf(stderr, "Genereate keys\n");
     rc = pkcs11_generate_key_pair(funcs, h_session, CKK_RSA, 2048,
                                   rsa_label, NULL, NULL);
     if (rc != CKR_OK) {
@@ -68,6 +70,7 @@ int main(int argc, char **argv)
         return rc;
     }
 
+    fprintf(stderr, "Load keys\n");
     uasn1_crypto_t *crypto = uasn1_pkcs11_crypto(funcs, slot);
     uasn1_key_t *rsa_prv = uasn1_key_load(crypto, UASN1_PRIVATE, (char *)rsa_label);
     uasn1_key_t *rsa_pub = uasn1_key_load(crypto, UASN1_PUBLIC,  (char *)rsa_label);
@@ -80,18 +83,22 @@ int main(int argc, char **argv)
         return -1;
     }
 
+    fprintf(stderr, "Crete certificate requests\n");
     request_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_csr");
     request_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_csr");
     request_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_csr");
 
+    fprintf(stderr, "Crete self-signed certificates\n");
     x509_self_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_ca");
     x509_self_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca");
     x509_self_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca");
 
+    fprintf(stderr, "Crete certificate revocation lists\n");
     crl_test(rsa_prv, UASN1_SHA1,   "tests/rsa1_ca");
     crl_test(rsa_prv, UASN1_SHA256, "tests/rsa2_ca");
     crl_test(ec_prv,  UASN1_SHA256, "tests/ec_ca");
 
+    fprintf(stderr, "Sign certificates\n");
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA1,   "tests/rsa1_ca", "tests/tsa_rsa1_crt");
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca", "tests/tsa_rsa2_crt");
     x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",   "tests/tsa_ec_crt");
@@ -100,18 +107,22 @@ int main(int argc, char **argv)
     x509_sign_test(rsa_prv, rsa_pub, UASN1_SHA256, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
     x509_sign_test(ec_prv,  ec_pub,  UASN1_SHA256, "tests/ec_ca",   "tests/ocsp_ec_crt");
 
+    fprintf(stderr, "Create OCSP requests\n");
     ocsp_request_test(crypto, "tests/rsa1_ca", "tests/ocsp_rsa1_crt");
     ocsp_request_test(crypto, "tests/rsa2_ca", "tests/ocsp_rsa2_crt");
     ocsp_request_test(crypto, "tests/ec_ca",   "tests/ocsp_ec_crt");
 
+    fprintf(stderr, "Sign OCSP responses\n");
     ocsp_response_test(rsa_prv, UASN1_SHA1,   "tests/ocsp_rsa1_crt");
     ocsp_response_test(rsa_prv, UASN1_SHA256, "tests/ocsp_rsa2_crt");
     ocsp_response_test(ec_prv,  UASN1_SHA256, "tests/ocsp_ec_crt");
 
+    fprintf(stderr, "Create TSA requests\n");
     tsa_request_test(crypto, UASN1_SHA1,   "tests/rsa1");
     tsa_request_test(crypto, UASN1_SHA256, "tests/rsa2");
     tsa_request_test(crypto, UASN1_SHA256, "tests/ec");
 
+    fprintf(stderr, "Sign TSA responses\n");
     tsa_response_test(UASN1_SHA1,   "tests/rsa1", "tests/tsa_rsa1_crt", crypto, rsa_prv);
     tsa_response_test(UASN1_SHA256, "tests/rsa2", "tests/tsa_rsa2_crt", crypto, rsa_prv);
     tsa_response_test(UASN1_SHA256, "tests/ec",   "tests/tsa_ec_crt",   crypto, ec_prv);

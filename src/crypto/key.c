@@ -93,7 +93,7 @@ static unsigned int id_sha512[9] = { 2, 16, 840, 1, 101, 3, 4, 2, 3 };
 uasn1_item_t *uasn1_digest_octet_string(uasn1_crypto_t *crypto, uasn1_digest_t digest, void *data, size_t length)
 {
     if(crypto->provider == UASN1_PKCS11) {
-        return uasn1_digest_octet_string(crypto, digest, data, length);
+        return uasn1_digest_pkcs11_octet_string(crypto, digest, data, length);
     } else {
         return NULL;
     }

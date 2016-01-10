@@ -2,7 +2,7 @@
 #include "uasn1.h"
 #include "crypto/cryptoki.h"
 #include "crypto/key.h"
-#include "crypto/pkcs11/key.h"
+#include "crypto/pkcs11/crypto.h"
 
 #include <string.h>
 

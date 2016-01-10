@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-uasn1_item_t *uasn1_digest_pkcs11_octet_string(uasn1_key_t *crypto, uasn1_digest_t digest, void *data, size_t length)
+uasn1_item_t *uasn1_digest_pkcs11_octet_string(uasn1_crypto_t *crypto, uasn1_digest_t digest, void *data, size_t length)
 {
     CK_MECHANISM mechanism = { 0, NULL_PTR, 0 };
     CK_SESSION_HANDLE h_session;

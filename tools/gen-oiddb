@@ -1,0 +1,82 @@
+#!/usr/bin/perl -w
+
+use bigint;
+
+sub der_it {
+	my (@a) = @_;
+	my ($i,$ret,@r);
+	my @ret = ();
+	
+	push @ret, $a[0]*40+$a[1];
+    
+	shift @a;
+	shift @a;
+	foreach (@a) {
+		@r = ();
+		$t = 0;
+		while ($_ >= 128) {
+			$x = $_ % 128;
+			$_ /= 128;
+			push(@r, ((($t++) ? 0x80 : 0) | $x));
+        }
+		push(@r, ((($t++) ? 0x80 : 0) | $_));
+		push @ret, reverse(@r);
+    }
+	return(@ret);
+}
+
+open (FILE, $ARGV[0]);
+
+print '#include <stdlib.h>
+#include "oids.h"
+
+';
+
+$oids = "";
+$names = "";
+$last = 0;
+$der = "";
+$const = "";
+
+my $file = join '', <FILE>;
+
+my @matches = ($file =~ m/OID\s*=\s*([0-9 ]+)\n
+                          Comment\s*=\s*(.*?)\n
+                          Description\s*=\s*([a-zA-Z0-9-_]+)\n/sgx);
+
+my $matches;
+my $i = 0;
+while (my ($oid, $comment, $name) = splice @matches, 0, 3) {
+    warn "Duplicate '$name'\n" if($matches->{$name});
+    $matches->{$name}++;
+    @oid = split m/\s+/, $oid;
+    @der = map { sprintf('0x%02x', $_) } (der_it(@oid));
+    $oids .= "  ".(join ", ", @der).",\n  /* $name [$last] = ".
+        (join ", ", @oid)." -- $comment */\n";
+    $names  .= "  { \"$name\", ".scalar(@der).", oids + $last },\n";
+    $last += scalar(@der);
+
+    my $id = uc($name);
+    $id =~ s/-/_/g;
+    $const .= "#define OID_$id $i\n";
+    $i++;
+}
+
+print '
+unsigned char oids[] =
+{
+'.$oids.'  0
+};
+
+oidelement oidtable[] = 
+{
+'.$names.'  { NULL, 0, NULL }
+};
+';
+
+print STDERR '#ifndef UASN1_OIDS_DB_H
+#define UASN1_OIDS_DB_H
+
+'.$const.'
+#endif
+';

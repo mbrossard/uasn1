@@ -21,8 +21,8 @@ typedef enum {
 } uasn1_digest_t;
 
 typedef enum {
-    UASN1_PKCS11,
-    UASN1_OPENSSL
+    UASN1_PKCS11  = 0x0,
+    UASN1_OPENSSL = 0x1
 } uasn1_crypto_provider_t;
 
 typedef enum {

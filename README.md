@@ -12,3 +12,7 @@ Known limitations:
   * No string format validations are performed.
   * Only a very small subset is supported.
   * Leaks a lot of memory.
+
+Possible improvements:
+
+  * Have a parsing mode that minimizes memory allocation.

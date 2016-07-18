@@ -7,7 +7,7 @@ mostly PKI applications in mind.
 
 Known limitations:
 
-  * OIDs must have components small enough to fit in a unisgned int.
+  * OIDs must have components small enough to fit in a unsigned int.
   * The only supported algorithms are SHA1 and RSA.
   * No string format validations are performed.
   * Only a very small subset is supported.

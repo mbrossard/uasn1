@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mathias Brossard <mathias@brossard.org>
+ * Copyright (C) 2016 Mathias Brossard <mathias@brossard.org>
  */
 
 #include "config.h"
@@ -78,8 +78,8 @@ int main(int argc, char **argv)
     uasn1_key_t *ec_pub =  uasn1_key_load(crypto, UASN1_PUBLIC,  (char *)ec_label);
 
     if(!(rsa_prv && rsa_pub && ec_prv && ec_pub)) {
-        printf("RSA private (%p), public (%p)\n", rsa_prv, rsa_pub);
-        printf("EC private (%p), public (%p)\n", ec_prv, ec_pub);
+        printf("RSA private (%p), public (%p)\n", (void *)rsa_prv, (void *)rsa_pub);
+        printf("EC private (%p), public (%p)\n", (void *)ec_prv, (void *)ec_pub);
         return -1;
     }
 

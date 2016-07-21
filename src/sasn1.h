@@ -26,7 +26,7 @@ typedef struct {
             size_t count;
         };
         struct {
-            void *ptr;
+            uint8_t *ptr;
             size_t size;
         };
     };

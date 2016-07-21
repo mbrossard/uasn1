@@ -24,3 +24,10 @@ void sasn1_free(sasn1_t *value)
         free(value);
     }
 }
+
+size_t sasn1_allocate(sasn1_t *value)
+{
+    size_t index = value->count;
+    value->count += 1;
+    return index;
+}

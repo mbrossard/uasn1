@@ -17,4 +17,7 @@ typedef struct {
     uint8_t value;
 } sasn1_tag_t;
 
+typedef struct {
+    sasn1_tag_t tag;
+} sasn1_element_t;
 #endif

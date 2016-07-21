@@ -18,16 +18,16 @@ typedef struct {
 } sasn1_tag_t;
 
 typedef struct {
-    uint32_t parent;
-    uint32_t sibling;
+    size_t parent;
+    size_t sibling;
     union {
         struct {
-            uint32_t child;
-            uint32_t count;
+            size_t child;
+            size_t count;
         };
         struct {
             void *ptr;
-            uint32_t size;
+            size_t size;
         };
     };
     sasn1_tag_t tag;
@@ -35,8 +35,8 @@ typedef struct {
 
 typedef struct {
     sasn1_element_t *elements;
-    uint32_t count;
-    uint32_t size;
+    size_t count;
+    size_t size;
 } sasn1_t;
 
 #endif

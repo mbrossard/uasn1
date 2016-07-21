@@ -18,6 +18,8 @@ typedef struct {
 } sasn1_tag_t;
 
 typedef struct {
+    uint32_t parent;
+    uint32_t sibling;
     union {
         struct {
             uint32_t child;

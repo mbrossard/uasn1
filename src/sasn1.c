@@ -31,3 +31,42 @@ size_t sasn1_allocate(sasn1_t *value)
     value->count += 1;
     return index;
 }
+
+size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
+{
+    size_t rv = 0, read = 0;
+    uint8_t c = 0;
+
+    if(ptr == NULL || size == 0) {
+        *length = SIZE_MAX;
+        return 0;
+    }
+
+    c = ptr[0];
+    ptr  += 1;
+    read += 1;
+    size -= 1;
+
+    if(c <= 127) {
+        rv = c;
+    } else {
+        if((c - 128) > sizeof(size_t) || (c - 128) > size) {
+            *length = SIZE_MAX;
+            return 0;
+        }
+
+        size_t i;
+        for(i = 0; i < (c - 128); i++) {
+            rv = rv << 8;
+            rv |= ptr[i];
+        }
+        read += i;
+        size -= i;
+    }
+
+    if(length) {
+        *length = rv;
+    }
+
+    return read;
+}

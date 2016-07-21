@@ -30,4 +30,11 @@ typedef struct {
     };
     sasn1_tag_t tag;
 } sasn1_element_t;
+
+typedef struct {
+    sasn1_element_t *elements;
+    uint32_t count;
+    uint32_t size;
+} sasn1_t;
+
 #endif

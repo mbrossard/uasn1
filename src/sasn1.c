@@ -120,8 +120,13 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     if((value->elements[i].tag.type == uasn1_sequence_type) ||
        (value->elements[i].tag.type == uasn1_set_type)) {
         /* This is a sequence or a set */
+        size_t previous = SIZE_MAX, child = SIZE_MAX;
         while(length > 0) {
-            r = sasn1_decode(value, ptr, size, i, NULL);
+            r = sasn1_decode(value, ptr, size, i, &child);
+            if(previous != SIZE_MAX && child != SIZE_MAX) {
+                value->elements[child].sibling = previous;
+            }
+            previous = child;
             ptr  += r;
             read += r;
             size -= r;

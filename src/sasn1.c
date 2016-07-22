@@ -73,10 +73,20 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
 
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, size_t *index)
 {
-    size_t read = 0;
+    uint8_t c, type, tag, _class, val = 0;
+    size_t read = 0, r, i, length = 0;
     
     if(ptr == NULL || size == 0) {
         return 0;
     }
+
+    /* Read the first byte */
+    c = ptr[0];
+    ptr  += 1;
+    size -= 1;
+    read += 1;
+    
+    _class = c & uasn1_class_mask;
+    val = c & ~(uasn1_class_mask | uasn1_constructed_tag);
     return read;
 }

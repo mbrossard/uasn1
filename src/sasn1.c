@@ -110,6 +110,12 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     value->elements[i].tag._class    = _class;
     value->elements[i].tag.construct = (c & uasn1_constructed_tag) ?
         uasn1_constructed_tag : uasn1_primitive_tag;
+
+    /* Read the length */
+    r = sasn1_decode_length(ptr, size, &length);
+    ptr  += r;
+    size -= r;
+    read += r;
     
     return read;
 }

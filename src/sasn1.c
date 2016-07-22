@@ -88,5 +88,28 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     
     _class = c & uasn1_class_mask;
     val = c & ~(uasn1_class_mask | uasn1_constructed_tag);
+
+    if(_class == uasn1_universal_tag) {
+        tag = uasn1_no_tag;
+        type = val;
+        val = 0;
+    }
+
+    /* Allocate an entry and store its index */
+    i = sasn1_allocate(value);
+    if(index) {
+        *index = i;
+    }
+
+    value->elements[i].parent        = parent;
+    value->elements[i].sibling       = SIZE_MAX;
+    value->elements[i].tag.tag       = tag;
+    value->elements[i].tag.type      = type;
+    value->elements[i].tag.value     = val;
+    value->elements[i].tag.flags     = 0;
+    value->elements[i].tag._class    = _class;
+    value->elements[i].tag.construct = (c & uasn1_constructed_tag) ?
+        uasn1_constructed_tag : uasn1_primitive_tag;
+    
     return read;
 }

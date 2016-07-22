@@ -121,8 +121,10 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
        (value->elements[i].tag.type == uasn1_set_type)) {
         /* This is a sequence or a set */
     } else {
+        c = 0;
         value->elements[i].ptr   = ptr;
         value->elements[i].size  = length;
+        value->elements[i].extra = c;
         read += length;
     }
     

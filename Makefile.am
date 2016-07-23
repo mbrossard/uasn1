@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = ${my_CFLAGS} \
 	-I$(srcdir)/src
 
-noinst_LIBRARIES = libuasn1.a
+noinst_LIBRARIES = libuasn1.a libsasn1.a
 
 libuasn1_a_SOURCES = src/uasn1.c \
 	src/base64.c \
@@ -22,6 +22,8 @@ libuasn1_a_SOURCES = src/uasn1.c \
 	src/tsa.c \
 	src/utils.c \
 	src/x509.c
+
+libsasn1_a_SOURCES = src/sasn1.c
 
 noinst_PROGRAMS = tests/test_asn1 \
 	tests/test_base64 \

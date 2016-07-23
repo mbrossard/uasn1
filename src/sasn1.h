@@ -29,6 +29,7 @@ typedef struct {
         struct {
             uint8_t *ptr;
             size_t size;
+            uint8_t extra;
         };
     };
     sasn1_tag_t tag;

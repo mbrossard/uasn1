@@ -167,6 +167,15 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         }
     } else {
         c = 0;
+        if(value->elements[i].tag.type == uasn1_bit_string_type) {
+            /* In case of bit string, extract the first byte */
+            c = ptr[0];
+            ptr    += 1;
+            size   -= 1;
+            read   += 1;
+            length -= 1;
+        }
+
         value->elements[i].ptr   = ptr;
         value->elements[i].size  = length;
         value->elements[i].extra = c;

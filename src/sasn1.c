@@ -116,6 +116,10 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             read += 1;
 
             type = c & ~ (uasn1_class_mask | uasn1_constructed_tag);
+        } else {
+            /* This is an implicit tag */
+            tag = uasn1_implicit_tag;
+            type = uasn1_octet_string_type; /* Use this as a default */
         }
     } else {
         /* No tagging */

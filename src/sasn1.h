@@ -15,6 +15,7 @@ typedef struct {
     uasn1_construct_t construct;
     uasn1_class_t _class;
     uasn1_tagging_class_t tag;
+    uasn1_flags_t flags;
     uint8_t value;
 } sasn1_tag_t;
 

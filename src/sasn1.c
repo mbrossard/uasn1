@@ -101,8 +101,24 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     
     _class = c & uasn1_class_mask;
     val = c & ~(uasn1_class_mask | uasn1_constructed_tag);
+    if(_class != uasn1_universal_tag) {
+        if (c & uasn1_constructed_tag) {
+            /* This is an explicit tag */
+            tag = uasn1_explicit_tag;
 
-    if(_class == uasn1_universal_tag) {
+            r = sasn1_decode_length(ptr, size, &length);
+            ptr  += r;
+            size -= r;
+            read += r;
+            c = ptr[0];
+            ptr  += 1;
+            size -= 1;
+            read += 1;
+
+            type = c & ~ (uasn1_class_mask | uasn1_constructed_tag);
+        }
+    } else {
+        /* No tagging */
         tag = uasn1_no_tag;
         type = val;
         val = 0;

@@ -2,6 +2,7 @@
 #define SASN1_H
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "uasn1.h"
 

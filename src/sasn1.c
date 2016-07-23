@@ -1,5 +1,9 @@
 #include "sasn1.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 sasn1_t *sasn1_new(size_t size)
 {
     sasn1_t *r = malloc(sizeof(sasn1_t));
@@ -28,6 +32,15 @@ void sasn1_free(sasn1_t *value)
 size_t sasn1_allocate(sasn1_t *value)
 {
     size_t index = value->count;
+
+    if(index == value->size) {
+        size_t s = value->size * sizeof(sasn1_element_t);
+        sasn1_element_t *new = (sasn1_element_t *)malloc(2 * s);
+        memcpy(new, value->elements, s);
+        free(value->elements);
+        value->elements = new;
+        value->size *= 2;
+    }
     value->count += 1;
     return index;
 }

@@ -157,7 +157,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         while(length > 0) {
             r = sasn1_decode(value, ptr, size, i, &child);
             if(previous != SIZE_MAX && child != SIZE_MAX) {
-                value->elements[child].sibling = previous;
+                value->elements[previous].sibling = child;
+            } else {
+                value->elements[i].child = child;
             }
             previous = child;
             ptr  += r;

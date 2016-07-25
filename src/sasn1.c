@@ -149,9 +149,12 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     ptr  += r;
     size -= r;
     read += r;
-    
-    if((value->elements[i].tag.type == uasn1_sequence_type) ||
-       (value->elements[i].tag.type == uasn1_set_type)) {
+
+    if((value->elements[i].tag.type == uasn1_end_of_content) ||
+       (value->elements[i].tag.type == uasn1_null_type)) {
+        /* nothing to do */
+    } else if((value->elements[i].tag.type == uasn1_sequence_type) ||
+              (value->elements[i].tag.type == uasn1_set_type)) {
         /* This is a sequence or a set */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
         while(length > 0) {

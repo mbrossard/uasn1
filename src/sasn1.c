@@ -200,3 +200,8 @@ size_t sasn1_length_length(size_t length)
     }
     return l;
 }
+
+size_t sasn1_compute_sizes(sasn1_t *value)
+{
+    return value->sizes[0];
+}

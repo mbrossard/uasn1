@@ -191,3 +191,12 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     
     return read;
 }
+
+size_t sasn1_length_length(size_t length)
+{
+    size_t l = 1;
+    if (length >= 0x80) {
+        for(l = 2; (length = length >> 8); l++);
+    }
+    return l;
+}

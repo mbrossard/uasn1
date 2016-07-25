@@ -203,5 +203,10 @@ size_t sasn1_length_length(size_t length)
 
 size_t sasn1_compute_sizes(sasn1_t *value)
 {
+    value->sizes = calloc(value->count, sizeof(size_t));
+    if(!value->sizes) {
+        return 0;
+    }
+
     return value->sizes[0];
 }

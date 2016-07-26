@@ -201,6 +201,17 @@ size_t sasn1_length_length(size_t length)
     return l;
 }
 
+size_t sasn1_encode_length(size_t length, uint8_t *ptr, size_t size)
+{
+    int i = 0, j = 0;
+
+    if(length < 0x80) {
+        ptr[0] = length;
+        i = 1;
+    }
+    return i;
+}
+
 size_t sasn1_compute_sizes(sasn1_t *value)
 {
     size_t index = 0, done = 0;

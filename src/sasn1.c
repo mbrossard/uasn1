@@ -203,6 +203,8 @@ size_t sasn1_length_length(size_t length)
 
 size_t sasn1_compute_sizes(sasn1_t *value)
 {
+    size_t index = 0, done = 0;
+
     if(value->sizes) {
         free(value->sizes);
     }
@@ -210,6 +212,27 @@ size_t sasn1_compute_sizes(sasn1_t *value)
     if(!value->sizes) {
         return 0;
     }
+
+    do {
+        if((value->elements[index].tag.type == uasn1_sequence_type) ||
+           (value->elements[index].tag.type == uasn1_set_type)) {
+            if(value->sizes[index] == 0) {
+                index = value->elements[index].child;
+            } else {
+                if(index == 0) {
+                    done = 1;
+                }
+                index = (value->elements[index].sibling == SIZE_MAX) ?
+                    value->elements[index].parent : value->elements[index].sibling;
+            }
+        } else {
+            if(index == 0) {
+                done = 1;
+            }
+            index = (value->elements[index].sibling == SIZE_MAX) ?
+                value->elements[index].parent : value->elements[index].sibling;
+        }
+    } while (done == 0);
 
     return value->sizes[0];
 }

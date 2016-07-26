@@ -11,6 +11,7 @@ sasn1_t *sasn1_new(size_t size)
 
     if((r != NULL) && (e != NULL)) {
         r->elements = e;
+        r->sizes = NULL;
         r->count = 0;
         r->size = size;
     } else {

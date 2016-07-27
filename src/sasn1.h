@@ -49,5 +49,6 @@ size_t sasn1_allocate(sasn1_t *value);
 size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length);
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, size_t *index);
 size_t sasn1_compute_sizes(sasn1_t *value);
+size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size);
 
 #endif

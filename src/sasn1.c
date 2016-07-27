@@ -268,3 +268,8 @@ size_t sasn1_compute_sizes(sasn1_t *value)
 
     return done;
 }
+
+size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
+{
+    return 0;
+}

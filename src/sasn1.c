@@ -217,10 +217,11 @@ size_t sasn1_encode_length(size_t length, uint8_t *ptr, size_t size)
             j++;
         } while(length);
         /* We have j octets and we set high bit... */
-        ptr[0] = j + 0x80;
-        for(i = 0; i < j; i++) {
-            ptr[i + 1] = l[i];
-        }
+        ptr[i++] = j + 0x80;
+        do {
+            ptr[i] = l[j - i];
+            i++;
+        } while(j >= i);
     }
     return i;
 }

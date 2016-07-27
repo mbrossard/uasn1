@@ -271,5 +271,23 @@ size_t sasn1_compute_sizes(sasn1_t *value)
 
 size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 {
+    size_t index = 0, done = 0;
+    do {
+        if((value->elements[index].tag.type == uasn1_sequence_type) ||
+           (value->elements[index].tag.type == uasn1_set_type)) {
+            index = value->elements[index].child;
+        } else {
+            while((value->elements[index].sibling == SIZE_MAX) && (index != 0)) {
+                index = value->elements[index].parent;
+            }
+
+            if(index == 0) {
+                done = 1;
+            } else {
+                index = value->elements[index].sibling;
+            }
+        }
+    } while(done == 0);
+
     return 0;
 }

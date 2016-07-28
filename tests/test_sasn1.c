@@ -21,5 +21,6 @@ int main()
     sasn1_t *v = sasn1_new(16);
     r = sasn1_decode(v, input, l, SIZE_MAX, NULL);
     fprintf(stderr, "Parsed %zu bytes\n", r);
+    sasn1_free(v);
     return 0;
 }

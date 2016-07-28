@@ -290,6 +290,19 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
             size -= 1;
             ptr += 1;
         } else {
+            if(value->elements[index].tag.tag == uasn1_explicit_tag) {
+                ptr[0] = (value->elements[index].tag._class
+                          | value->elements[index].tag.value
+                          | uasn1_constructed_tag) & 0xFF;
+                wrote += 1;
+                size -= 1;
+                ptr += 1;
+                
+                w = sasn1_encode_length(l + sasn1_length_length(l) + 1, ptr, size);
+                wrote += w;
+                size -= w;
+                ptr += w;
+            }
             ptr[0] = (value->elements[index].tag.type
                       | value->elements[index].tag.construct) & 0xFF;
             wrote += 1;

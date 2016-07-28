@@ -27,10 +27,14 @@ libsasn1_a_SOURCES = src/sasn1.c
 
 noinst_PROGRAMS = tests/test_asn1 \
 	tests/test_base64 \
-	tests/test_cryptoki
+	tests/test_cryptoki \
+	tests/test_sasn1
 
 tests_test_asn1_SOURCES = tests/test_asn1.c
 tests_test_asn1_LDADD = libuasn1.a
+
+tests_test_sasn1_SOURCES = tests/test_sasn1.c
+tests_test_sasn1_LDADD = libsasn1.a
 
 tests_test_base64_SOURCES = src/base64.c
 tests_test_base64_CFLAGS = -DBASE64_TEST

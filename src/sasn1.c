@@ -273,6 +273,13 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 {
     size_t wrote = 0, w = 0, index = 0;
 
+    if(value->sizes == NULL) {
+        size_t c = sasn1_compute_sizes(value);
+        if(c > size) {
+            return SIZE_MAX;
+        }
+    }
+    
     do {
         ptr[0] = (value->elements[index].tag.type
                   | value->elements[index].tag.construct) & 0xFF;

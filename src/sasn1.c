@@ -282,11 +282,20 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
     
     do {
         size_t l = value->sizes[index];
-        ptr[0] = (value->elements[index].tag.type
-                  | value->elements[index].tag.construct) & 0xFF;
-        wrote += 1;
-        size -= 1;
-        ptr += 1;
+        if(value->elements[index].tag.tag == uasn1_implicit_tag) {
+            ptr[0] = (value->elements[index].tag._class
+                      | value->elements[index].tag.value
+                      | value->elements[index].tag.construct) & 0xFF;
+            wrote += 1;
+            size -= 1;
+            ptr += 1;
+        } else {
+            ptr[0] = (value->elements[index].tag.type
+                      | value->elements[index].tag.construct) & 0xFF;
+            wrote += 1;
+            size -= 1;
+            ptr += 1;
+        }
 
         w = sasn1_encode_length(l, ptr, size);
         wrote += w;

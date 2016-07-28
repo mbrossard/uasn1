@@ -306,6 +306,13 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
            (value->elements[index].tag.type == uasn1_set_type)) {
             index = value->elements[index].child;
         } else {
+            if (value->elements[index].tag.type == uasn1_bit_string_type) {
+                ptr[0] = value->elements[index].extra & 0xFF;
+                wrote += 1;
+                size -= 1;
+                ptr += 1;
+            }
+
             memcpy(ptr, value->elements[index].ptr, value->elements[index].size);
             wrote += value->elements[index].size;
             size -= value->elements[index].size;

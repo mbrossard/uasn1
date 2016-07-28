@@ -271,8 +271,15 @@ size_t sasn1_compute_sizes(sasn1_t *value)
 
 size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 {
-    size_t index = 0;
+    size_t wrote = 0, w = 0, index = 0;
+
     do {
+        ptr[0] = (value->elements[index].tag.type
+                  | value->elements[index].tag.construct) & 0xFF;
+        wrote += 1;
+        size -= 1;
+        ptr += 1;
+
         if((value->elements[index].tag.type == uasn1_sequence_type) ||
            (value->elements[index].tag.type == uasn1_set_type)) {
             index = value->elements[index].child;
@@ -287,5 +294,5 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
         }
     } while(index != 0);
 
-    return 0;
+    return wrote;
 }

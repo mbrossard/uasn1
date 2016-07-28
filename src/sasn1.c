@@ -297,6 +297,11 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
            (value->elements[index].tag.type == uasn1_set_type)) {
             index = value->elements[index].child;
         } else {
+            memcpy(ptr, value->elements[index].ptr, value->elements[index].size);
+            wrote += value->elements[index].size;
+            size -= value->elements[index].size;
+            ptr += value->elements[index].size;
+
             while((value->elements[index].sibling == SIZE_MAX) && (index != 0)) {
                 index = value->elements[index].parent;
             }

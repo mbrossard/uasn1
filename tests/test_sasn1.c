@@ -11,7 +11,7 @@ int main()
 {
     char *path = "tests/ocsp_rsa1_crt.der";
     uint8_t input[1024 * 64];
-    size_t l = 0, r;
+    size_t l = 0, r = 0, err = 0;
     FILE *f = fopen(path, "rb");
     if(f) {
         l = fread(input, 1, sizeof(input), f);
@@ -21,6 +21,10 @@ int main()
     sasn1_t *v = sasn1_new(16);
     r = sasn1_decode(v, input, l, SIZE_MAX, NULL);
     fprintf(stderr, "Parsed %zu bytes\n", r);
+    if(l != r) {
+        fprintf(stderr, "Sizes do not match got %zu expected %zu\n", r, l);
+        err = 1;
+    }
     sasn1_free(v);
-    return 0;
+    return err;
 }

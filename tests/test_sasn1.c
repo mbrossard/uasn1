@@ -28,6 +28,9 @@ int main()
 
     l = sasn1_compute_sizes(v);
     fprintf(stderr, "Computed %zu\n", l);
+    l = sasn1_encode(v, output, sizeof(output));
+    fprintf(stderr, "Wrote %zu\n", l);
+
     sasn1_free(v);
     return err;
 }

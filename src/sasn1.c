@@ -271,7 +271,7 @@ size_t sasn1_compute_sizes(sasn1_t *value)
 
 size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 {
-    size_t wrote = 0, w = 0, index = 0;
+    size_t w = 0, index = 0;
 
     if(value->sizes == NULL) {
         size_t c = sasn1_compute_sizes(value);
@@ -283,53 +283,38 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
     do {
         size_t l = value->sizes[index];
         if(value->elements[index].tag.tag == uasn1_implicit_tag) {
-            ptr[0] = (value->elements[index].tag._class
+            ptr[w] = (value->elements[index].tag._class
                       | value->elements[index].tag.value
                       | value->elements[index].tag.construct) & 0xFF;
-            wrote += 1;
-            size -= 1;
-            ptr += 1;
+            w += 1;
         } else {
             if(value->elements[index].tag.tag == uasn1_explicit_tag) {
-                ptr[0] = (value->elements[index].tag._class
+                ptr[w] = (value->elements[index].tag._class
                           | value->elements[index].tag.value
                           | uasn1_constructed_tag) & 0xFF;
-                wrote += 1;
-                size -= 1;
-                ptr += 1;
+                w += 1;
                 
-                w = sasn1_encode_length(l + sasn1_length_length(l) + 1, ptr, size);
-                wrote += w;
-                size -= w;
-                ptr += w;
+                w += sasn1_encode_length(l + sasn1_length_length(l) + 1,
+                                         ptr + w, size - w);
             }
-            ptr[0] = (value->elements[index].tag.type
+            ptr[w] = (value->elements[index].tag.type
                       | value->elements[index].tag.construct) & 0xFF;
-            wrote += 1;
-            size -= 1;
-            ptr += 1;
+            w += 1;
         }
 
-        w = sasn1_encode_length(l, ptr, size);
-        wrote += w;
-        size -= w;
-        ptr += w;
+        w += sasn1_encode_length(l, ptr + w, size - w);
 
         if((value->elements[index].tag.type == uasn1_sequence_type) ||
            (value->elements[index].tag.type == uasn1_set_type)) {
             index = value->elements[index].child;
         } else {
             if (value->elements[index].tag.type == uasn1_bit_string_type) {
-                ptr[0] = value->elements[index].extra & 0xFF;
-                wrote += 1;
-                size -= 1;
-                ptr += 1;
+                ptr[w] = value->elements[index].extra & 0xFF;
+                w += 1;
             }
 
-            memcpy(ptr, value->elements[index].ptr, value->elements[index].size);
-            wrote += value->elements[index].size;
-            size -= value->elements[index].size;
-            ptr += value->elements[index].size;
+            memcpy(ptr + w, value->elements[index].ptr, value->elements[index].size);
+            w += value->elements[index].size;
 
             while((value->elements[index].sibling == SIZE_MAX) && (index != 0)) {
                 index = value->elements[index].parent;
@@ -341,5 +326,5 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
         }
     } while(index != 0);
 
-    return wrote;
+    return w;
 }

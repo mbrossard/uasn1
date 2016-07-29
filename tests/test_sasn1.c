@@ -25,6 +25,9 @@ int main()
         fprintf(stderr, "Sizes do not match got %zu expected %zu\n", r, l);
         err = 1;
     }
+
+    l = sasn1_compute_sizes(v);
+    fprintf(stderr, "Computed %zu\n", l);
     sasn1_free(v);
     return err;
 }

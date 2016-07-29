@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 /*
- * Copyright © 2015 Mathias Brossard
+ * Copyright (C) 2016 Mathias Brossard <mathias@brossard.org>
  */
 
 /** @file asn1.h

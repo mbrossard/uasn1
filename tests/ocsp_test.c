@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 Mathias Brossard <mathias@brossard.org>
+ * Copyright (C) 2016 Mathias Brossard <mathias@brossard.org>
  */
 
 #include "tests.h"

@@ -2,7 +2,7 @@
 #define UASN1_UTILS_H
 
 /*
- * Copyright © 2015 Mathias Brossard
+ * Copyright (C) 2016 Mathias Brossard <mathias@brossard.org>
  */
 
 #include "config.h"

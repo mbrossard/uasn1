@@ -2,7 +2,7 @@
 #define UASN1_TESTS__H
 
 /*
- * Copyright © 2015 Mathias Brossard <mathias@brossard.org>
+ * Copyright (C) 2016 Mathias Brossard <mathias@brossard.org>
  */
 
 #include "uasn1.h"

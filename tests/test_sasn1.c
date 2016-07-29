@@ -11,6 +11,7 @@ int main()
 {
     char *path = "tests/ocsp_rsa1_crt.der";
     uint8_t input[1024 * 64];
+    uint8_t output[1024 * 64];
     size_t l = 0, r = 0, err = 0;
     FILE *f = fopen(path, "rb");
     if(f) {

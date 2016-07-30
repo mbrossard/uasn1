@@ -36,6 +36,11 @@ int main()
     fprintf(stderr, "Computed %zu\n", l);
     l = sasn1_encode(v, output, sizeof(output));
     fprintf(stderr, "Wrote %zu\n", l);
+    if(l != r) {
+        fprintf(stderr, "Encoding: sizes do not match got %zu expected %zu\n", r, l);
+        err = 1;
+    }
+
 
     sasn1_free(v);
     return err;

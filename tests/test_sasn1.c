@@ -23,7 +23,7 @@ int main()
     r = sasn1_decode(v, input, l, SIZE_MAX, NULL);
     fprintf(stderr, "Parsed %zu bytes\n", r);
     if(l != r) {
-        fprintf(stderr, "Sizes do not match got %zu expected %zu\n", r, l);
+        fprintf(stderr, "Decoding: sizes do not match got %zu expected %zu\n", r, l);
         err = 1;
     }
 

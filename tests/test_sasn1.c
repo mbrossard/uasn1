@@ -41,6 +41,10 @@ int main()
         err = 1;
     }
 
+    if(memcmp(input, output, l) != 0) {
+        fprintf(stderr, "Re-encoding does not match original\n");
+        err = 1;
+    }
 
     sasn1_free(v);
     return err;

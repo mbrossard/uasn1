@@ -17,6 +17,9 @@ int main()
     if(f) {
         l = fread(input, 1, sizeof(input), f);
         fclose(f);
+    } else {
+        fprintf(stderr, "Error opening '%s'\n", path);
+        return 1;
     }
     fprintf(stderr, "Loaded %zu bytes\n", l);
     sasn1_t *v = sasn1_new(16);

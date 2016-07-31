@@ -13,6 +13,14 @@
 
 #include <string.h>
 
+int uasn1_key_is_public_key(uasn1_key_t *key)
+{
+    if(key->provider == UASN1_PKCS11) {
+        return (key->pkcs11.class == CKO_PUBLIC_KEY) ? 1 : 0; 
+    }
+    return 0;
+}
+
 uasn1_key_t *uasn1_key_load(uasn1_crypto_t *crypto, uasn1_key_type_t type, char *label)
 {
     if(crypto->provider == UASN1_PKCS11) {

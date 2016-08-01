@@ -142,6 +142,8 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     value->elements[i].tag.value     = val;
     value->elements[i].tag.flags     = 0;
     value->elements[i].tag._class    = _class;
+    value->elements[i].ptr           = NULL;
+    value->elements[i].size          = 0;
     value->elements[i].tag.construct = (c & uasn1_constructed_tag) ?
         uasn1_constructed_tag : uasn1_primitive_tag;
 

@@ -129,6 +129,8 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         *index = i;
     }
 
+    memset(&(value->elements[i]), 0, sizeof(sasn1_t));
+    
     value->elements[i].parent        = parent;
     value->elements[i].sibling       = SIZE_MAX;
     value->elements[i].tag.tag       = tag;

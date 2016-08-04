@@ -87,6 +87,7 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
 
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, size_t *index)
 {
+    uint8_t c;
     size_t read = 0, r = 0, i, length = 0;
     
     if(ptr == NULL || size == 0) {

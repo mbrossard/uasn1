@@ -257,8 +257,11 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
                 w += 1;
             }
 
-            memcpy(ptr + w, value->elements[index].ptr, value->elements[index].size);
-            w += value->elements[index].size;
+
+            if (value->elements[index].tag.construct == uasn1_primitive_tag) {            
+                memcpy(ptr + w, value->elements[index].ptr, value->elements[index].size);
+                w += value->elements[index].size;
+            }
 
             while((value->elements[index].sibling == SIZE_MAX) && (index != 0)) {
                 index = value->elements[index].parent;

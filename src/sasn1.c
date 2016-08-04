@@ -87,7 +87,6 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
 
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, size_t *index)
 {
-    uint8_t c, type, tag, _class, val = 0;
     size_t read = 0, r = 0, i, length = 0;
     
     if(ptr == NULL || size == 0) {
@@ -97,31 +96,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     /* Read the first byte */
     c = ptr[read];
     read += 1;
-    
-    _class = c & uasn1_class_mask;
-    val = c & ~(uasn1_class_mask | uasn1_constructed_tag);
-    if(_class != uasn1_universal_tag) {
-        if (c & uasn1_constructed_tag) {
-            /* This is an explicit tag */
-            tag = uasn1_explicit_tag;
 
-            r = sasn1_decode_length(ptr + read, size - read, &length);
-            read += r;
-            c = ptr[read];
-            read += 1;
-
-            type = c & ~ (uasn1_class_mask | uasn1_constructed_tag);
-        } else {
-            /* This is an implicit tag */
-            tag = uasn1_implicit_tag;
-            type = uasn1_octet_string_type; /* Use this as a default */
-        }
-    } else {
-        /* No tagging */
-        tag = uasn1_no_tag;
-        type = val;
-        val = 0;
-    }
+    r = sasn1_decode_length(ptr + read, size - read, &length);
+    read += r;
 
     /* Allocate an entry and store its index */
     i = sasn1_allocate(value);
@@ -130,28 +107,18 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     }
 
     memset(&(value->elements[i]), 0, sizeof(sasn1_t));
-    
+
     value->elements[i].parent        = parent;
     value->elements[i].sibling       = SIZE_MAX;
-    value->elements[i].tag.tag       = tag;
-    value->elements[i].tag.type      = type;
-    value->elements[i].tag.value     = val;
+    value->elements[i].tag.tag       = c & ~(uasn1_class_mask | uasn1_constructed_tag);
+
     value->elements[i].tag.flags     = 0;
-    value->elements[i].tag._class    = _class;
-    value->elements[i].ptr           = NULL;
-    value->elements[i].size          = 0;
+    value->elements[i].tag._class    = c & uasn1_class_mask;
+
     value->elements[i].tag.construct = (c & uasn1_constructed_tag) ?
         uasn1_constructed_tag : uasn1_primitive_tag;
 
-    /* Read the length */
-    r = sasn1_decode_length(ptr + read, size - read, &length);
-    read += r;
-
-    if((value->elements[i].tag.type == uasn1_end_of_content) ||
-       (value->elements[i].tag.type == uasn1_null_type)) {
-        /* nothing to do */
-    } else if((value->elements[i].tag.type == uasn1_sequence_type) ||
-              (value->elements[i].tag.type == uasn1_set_type)) {
+    if(value->elements[i].tag.construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
         while(length > 0) {
@@ -169,7 +136,8 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         }
     } else {
         c = 0;
-        if(value->elements[i].tag.type == uasn1_bit_string_type) {
+        if((value->elements[i].tag._class == uasn1_universal_tag) &&
+           (value->elements[i].tag.tag == uasn1_bit_string_type)) {
             /* In case of bit string, extract the first byte */
             c = ptr[read];
             read   += 1;

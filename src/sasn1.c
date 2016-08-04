@@ -199,22 +199,18 @@ size_t sasn1_compute_sizes(sasn1_t *value)
     }
 
     do {
-        if(((value->elements[index].tag.type == uasn1_sequence_type) ||
-            (value->elements[index].tag.type == uasn1_set_type)) &&
+        if((value->elements[index].tag.construct == uasn1_constructed_tag) &&
            (value->sizes[index] == 0)) {
             index = value->elements[index].child;
         } else {
             size_t l = 0;
-            if ((value->elements[index].tag.type != uasn1_sequence_type) &&
-                (value->elements[index].tag.type != uasn1_set_type)) {
+            if (value->elements[index].tag.construct == uasn1_primitive_tag) {
                 value->sizes[index] += value->elements[index].size +
-                    ((value->elements[index].tag.type == uasn1_bit_string_type) ? 1 : 0);
+                    (((value->elements[index].tag._class == uasn1_universal_tag) &&
+                      (value->elements[index].tag.tag == uasn1_bit_string_type)) ? 1 : 0);
             }
 
             l += sasn1_length_length(value->sizes[index]) + 1;
-            if(value->elements[index].tag.tag == uasn1_explicit_tag) {                
-                l += sasn1_length_length(value->sizes[index] + l) + 1;
-            }
 
             if(index == 0) {
                 done = value->sizes[index] + l;

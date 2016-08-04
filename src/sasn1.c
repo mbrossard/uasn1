@@ -237,34 +237,17 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
     }
     
     do {
-        size_t l = value->sizes[index];
-        if(value->elements[index].tag.tag == uasn1_implicit_tag) {
-            ptr[w] = (value->elements[index].tag._class
-                      | value->elements[index].tag.value
-                      | value->elements[index].tag.construct) & 0xFF;
-            w += 1;
-        } else {
-            if(value->elements[index].tag.tag == uasn1_explicit_tag) {
-                ptr[w] = (value->elements[index].tag._class
-                          | value->elements[index].tag.value
-                          | uasn1_constructed_tag) & 0xFF;
-                w += 1;
-                
-                w += sasn1_encode_length(l + sasn1_length_length(l) + 1,
-                                         ptr + w, size - w);
-            }
-            ptr[w] = (value->elements[index].tag.type
-                      | value->elements[index].tag.construct) & 0xFF;
-            w += 1;
-        }
+        ptr[w] = (value->elements[index].tag._class
+                  | value->elements[index].tag.construct
+                  | value->elements[index].tag.tag) & 0xFF;
+        w += 1;
 
-        w += sasn1_encode_length(l, ptr + w, size - w);
+        w += sasn1_encode_length(value->sizes[index], ptr + w, size - w);
 
-        if((value->elements[index].tag.type == uasn1_sequence_type) ||
-           (value->elements[index].tag.type == uasn1_set_type)) {
+        if(value->elements[index].tag.construct == uasn1_constructed_tag) {
             index = value->elements[index].child;
         } else {
-            if (value->elements[index].tag.type == uasn1_bit_string_type) {
+            if (value->elements[index].tag.tag == uasn1_bit_string_type) {
                 ptr[w] = value->elements[index].extra & 0xFF;
                 w += 1;
             }

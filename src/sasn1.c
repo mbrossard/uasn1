@@ -122,6 +122,8 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     if(value->elements[i].tag.construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
+        value->elements[i].child = child;
+        value->elements[i].count = 0;
         while(length > 0) {
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
             if(previous != SIZE_MAX && child != SIZE_MAX) {

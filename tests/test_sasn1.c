@@ -42,14 +42,13 @@ int main()
             fprintf(stderr, "Decoding: sizes do not match got %zu expected %zu\n", r, l);
             err = 1;
         }
-    
-        l = sasn1_compute_sizes(v);
+        r = sasn1_compute_sizes(v);
         if(l != r) {
             fprintf(stderr, "Computing: sizes do not match got %zu expected %zu\n", r, l);
             err = 1;
         }
     
-        l = sasn1_encode(v, output, sizeof(output));
+        r = sasn1_encode(v, output, sizeof(output));
         if(l != r) {
             fprintf(stderr, "Encoding: sizes do not match got %zu expected %zu\n", r, l);
             err = 1;

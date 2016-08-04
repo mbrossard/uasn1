@@ -36,10 +36,8 @@ int main()
             fprintf(stderr, "Loaded '%s'\n", paths[i]);
             fclose(f);
         }
-        fprintf(stderr, "Loaded %zu bytes\n", l);
         sasn1_t *v = sasn1_new(16);
         r = sasn1_decode(v, input, l, SIZE_MAX, NULL);
-        fprintf(stderr, "Parsed %zu bytes\n", r);
         if(l != r) {
             fprintf(stderr, "Decoding: sizes do not match got %zu expected %zu\n", r, l);
             err = 1;
@@ -51,9 +49,7 @@ int main()
             err = 1;
         }
     
-        fprintf(stderr, "Computed %zu\n", l);
         l = sasn1_encode(v, output, sizeof(output));
-        fprintf(stderr, "Wrote %zu\n", l);
         if(l != r) {
             fprintf(stderr, "Encoding: sizes do not match got %zu expected %zu\n", r, l);
             err = 1;

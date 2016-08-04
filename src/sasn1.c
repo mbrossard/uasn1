@@ -203,6 +203,7 @@ size_t sasn1_compute_sizes(sasn1_t *value)
 
     do {
         if((value->elements[index].tag.construct == uasn1_constructed_tag) &&
+           (value->elements[index].child != SIZE_MAX) &&
            (value->sizes[index] == 0)) {
             index = value->elements[index].child;
         } else {

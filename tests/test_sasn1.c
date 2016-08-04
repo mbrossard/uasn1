@@ -35,6 +35,9 @@ int main()
             l = fread(input, 1, sizeof(input), f);
             fprintf(stderr, "Loaded '%s'\n", paths[i]);
             fclose(f);
+        } else {
+            fprintf(stderr, "Error opening '%s'\n", paths[i]);
+            return 1;
         }
         sasn1_t *v = sasn1_new(16);
         r = sasn1_decode(v, input, l, SIZE_MAX, NULL);

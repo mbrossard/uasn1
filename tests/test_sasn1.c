@@ -33,6 +33,7 @@ int main()
         FILE *f = fopen(paths[i], "rb");
         if(f) {
             l = fread(input, 1, sizeof(input), f);
+            fprintf(stderr, "Loaded '%s'\n", paths[i]);
             fclose(f);
         }
         fprintf(stderr, "Loaded %zu bytes\n", l);

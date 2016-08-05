@@ -11,13 +11,6 @@
  */
 
 typedef struct {
-    size_t tag;
-    uasn1_construct_t construct;
-    uasn1_class_t _class;
-    uasn1_flags_t flags;
-} sasn1_tag_t;
-
-typedef struct {
     size_t parent;
     size_t sibling;
     union {
@@ -28,10 +21,13 @@ typedef struct {
         struct {
             uint8_t *ptr;
             size_t size;
-            uint8_t extra;
         };
     };
-    sasn1_tag_t tag;
+    uint32_t tag;
+    uint8_t construct;
+    uint8_t _class;
+    uint8_t flags;
+    uint8_t extra;
 } sasn1_element_t;
 
 typedef struct {

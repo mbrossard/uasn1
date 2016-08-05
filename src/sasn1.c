@@ -111,15 +111,13 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
     value->elements[i].parent        = parent;
     value->elements[i].sibling       = SIZE_MAX;
-    value->elements[i].tag.tag       = c & ~(uasn1_class_mask | uasn1_constructed_tag);
-
-    value->elements[i].tag.flags     = 0;
-    value->elements[i].tag._class    = c & uasn1_class_mask;
-
-    value->elements[i].tag.construct = (c & uasn1_constructed_tag) ?
+    value->elements[i].flags         = 0;
+    value->elements[i]._class        = c & uasn1_class_mask;
+    value->elements[i].construct     = (c & uasn1_constructed_tag) ?
         uasn1_constructed_tag : uasn1_primitive_tag;
+    value->elements[i].tag           = c & ~(uasn1_class_mask | uasn1_constructed_tag);
 
-    if(value->elements[i].tag.construct == uasn1_constructed_tag) {
+    if(value->elements[i].construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
         value->elements[i].child = child;
@@ -139,8 +137,8 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         }
     } else {
         c = 0;
-        if((value->elements[i].tag._class == uasn1_universal_tag) &&
-           (value->elements[i].tag.tag == uasn1_bit_string_type)) {
+        if((value->elements[i]._class == uasn1_universal_tag) &&
+           (value->elements[i].tag == uasn1_bit_string_type)) {
             /* In case of bit string, extract the first byte */
             c = ptr[read];
             read   += 1;
@@ -202,16 +200,16 @@ size_t sasn1_compute_sizes(sasn1_t *value)
     }
 
     do {
-        if((value->elements[index].tag.construct == uasn1_constructed_tag) &&
+        if((value->elements[index].construct == uasn1_constructed_tag) &&
            (value->elements[index].child != SIZE_MAX) &&
            (value->sizes[index] == 0)) {
             index = value->elements[index].child;
         } else {
             size_t l = 0;
-            if (value->elements[index].tag.construct == uasn1_primitive_tag) {
+            if (value->elements[index].construct == uasn1_primitive_tag) {
                 value->sizes[index] += value->elements[index].size +
-                    (((value->elements[index].tag._class == uasn1_universal_tag) &&
-                      (value->elements[index].tag.tag == uasn1_bit_string_type)) ? 1 : 0);
+                    (((value->elements[index]._class == uasn1_universal_tag) &&
+                      (value->elements[index].tag == uasn1_bit_string_type)) ? 1 : 0);
             }
 
             l += sasn1_length_length(value->sizes[index]) + 1;
@@ -241,24 +239,24 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
     }
     
     do {
-        ptr[w] = (value->elements[index].tag._class
-                  | value->elements[index].tag.construct
-                  | value->elements[index].tag.tag) & 0xFF;
+        ptr[w] = (value->elements[index]._class
+                  | value->elements[index].construct
+                  | value->elements[index].tag) & 0xFF;
         w += 1;
 
         w += sasn1_encode_length(value->sizes[index], ptr + w, size - w);
 
-        if((value->elements[index].tag.construct == uasn1_constructed_tag) &&
+        if((value->elements[index].construct == uasn1_constructed_tag) &&
            (value->elements[index].child != SIZE_MAX)) {
             index = value->elements[index].child;
         } else {
-            if (value->elements[index].tag.tag == uasn1_bit_string_type) {
+            if ((value->elements[index]._class == uasn1_universal_tag) &&
+                (value->elements[index].tag == uasn1_bit_string_type)) {
                 ptr[w] = value->elements[index].extra & 0xFF;
                 w += 1;
             }
 
-
-            if (value->elements[index].tag.construct == uasn1_primitive_tag) {            
+            if (value->elements[index].construct == uasn1_primitive_tag) {            
                 memcpy(ptr + w, value->elements[index].ptr, value->elements[index].size);
                 w += value->elements[index].size;
             }

@@ -119,6 +119,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     }
 
     r = sasn1_decode_length(ptr + read, size - read, &length);
+    if(r == SIZE_MAX) {
+        return SIZE_MAX;
+    }
     read += r;
 
     if(value->elements[i].construct == uasn1_constructed_tag) {
@@ -128,6 +131,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         value->elements[i].count = 0;
         while(length > 0) {
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
+            if(r == SIZE_MAX) {
+                return SIZE_MAX;
+            }
             if(previous != SIZE_MAX && child != SIZE_MAX) {
                 value->elements[previous].sibling = child;
                 value->elements[i].count++;

@@ -117,6 +117,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     value->elements[i].construct     = (c & uasn1_constructed_tag) ?
         uasn1_constructed_tag : uasn1_primitive_tag;
     value->elements[i].tag           = c & ~(uasn1_class_mask | uasn1_constructed_tag);
+    if(value->elements[i].tag == 31) {
+        return SIZE_MAX;
+    }
 
     if(value->elements[i].construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */

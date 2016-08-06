@@ -99,9 +99,6 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     c = ptr[read];
     read += 1;
 
-    r = sasn1_decode_length(ptr + read, size - read, &length);
-    read += r;
-
     /* Allocate an entry and store its index */
     i = sasn1_allocate(value);
     if(index) {
@@ -120,6 +117,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     if(value->elements[i].tag == 31) {
         return SIZE_MAX;
     }
+
+    r = sasn1_decode_length(ptr + read, size - read, &length);
+    read += r;
 
     if(value->elements[i].construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */

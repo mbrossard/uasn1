@@ -26,6 +26,7 @@ void sasn1_free(sasn1_t *value)
 {
     if(value != NULL) {
         free(value->elements);
+        free(value->sizes);
         free(value);
     }
 }

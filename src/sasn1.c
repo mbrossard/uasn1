@@ -239,10 +239,14 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
     }
     
     do {
-        ptr[w] = (value->elements[index]._class
-                  | value->elements[index].construct
-                  | value->elements[index].tag) & 0xFF;
-        w += 1;
+        if(value->elements[index].tag < 31) {
+            ptr[w] = (value->elements[index]._class
+                      | value->elements[index].construct
+                      | value->elements[index].tag) & 0xFF;
+            w += 1;
+        } else {
+            return SIZE_MAX;
+        }
 
         w += sasn1_encode_length(value->sizes[index], ptr + w, size - w);
 

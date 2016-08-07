@@ -53,8 +53,7 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
     uint8_t c = 0;
 
     if(ptr == NULL || size == 0) {
-        *length = SIZE_MAX;
-        return 0;
+        return SIZE_MAX;
     }
 
     c = ptr[0];
@@ -67,7 +66,7 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
     } else {
         if((c - 128) > sizeof(size_t) || (c - 128) > size) {
             *length = SIZE_MAX;
-            return 0;
+            return SIZE_MAX;
         }
 
         size_t i;

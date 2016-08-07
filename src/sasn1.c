@@ -178,6 +178,10 @@ size_t sasn1_encode_length(size_t length, uint8_t *ptr, size_t size)
     uint8_t l[sizeof(size_t)];
     int i = 0, j = 0;
 
+    if(size < 1) {
+        return SIZE_MAX;
+    }
+
     if(length < 0x80) {
         ptr[0] = length;
         i = 1;

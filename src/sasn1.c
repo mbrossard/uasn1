@@ -56,10 +56,8 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
         return SIZE_MAX;
     }
 
-    c = ptr[0];
-    ptr  += 1;
+    c = ptr[read];
     read += 1;
-    size -= 1;
 
     if(c <= 127) {
         rv = c;
@@ -72,10 +70,9 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
         size_t i;
         for(i = 0; i < (c - 128); i++) {
             rv = rv << 8;
-            rv |= ptr[i];
+            rv |= ptr[read + i];
         }
         read += i;
-        size -= i;
     }
 
     if(length) {

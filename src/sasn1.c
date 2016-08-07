@@ -63,7 +63,6 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
         rv = c;
     } else {
         if((c - 128) > sizeof(size_t) || (c - 128) > (size - read)) {
-            *length = SIZE_MAX;
             return SIZE_MAX;
         }
 

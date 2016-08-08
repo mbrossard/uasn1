@@ -111,6 +111,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     value->elements[i].tag           = c & ~(uasn1_class_mask | uasn1_constructed_tag);
     if(value->elements[i].tag == 31) {
         uint8_t j = 0, k = (sizeof(size_t) * 8) / 7;
+        uint8_t m = 1 << (sizeof(size_t) * 8) % 7;
         r = 0;
         do {
             c = ptr[read];
@@ -119,6 +120,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             r <<= 7;
             r |= c & 0x7F;
 
+            if((j == 0) && ((c & 0x7F) < m)) {
+                k += 1;
+            }
             j++;
             if(j > k) {
                 return SIZE_MAX;

@@ -147,6 +147,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             if(r == SIZE_MAX) {
                 return SIZE_MAX;
             }
+            read += r;
+            length -= r;
+
             if(previous != SIZE_MAX && child != SIZE_MAX) {
                 value->elements[previous].sibling = child;
                 value->elements[i].count++;
@@ -155,8 +158,6 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
                 value->elements[i].count = 1;
             }
             previous = child;
-            read += r;
-            length -= r;
         }
     } else {
         c = 0;

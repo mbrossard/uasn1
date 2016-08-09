@@ -215,6 +215,20 @@ size_t sasn1_encode_length(size_t length, uint8_t *ptr, size_t size)
     return i;
 }
 
+size_t sasn1_tag_size(size_t v)
+{
+    size_t r = 1;
+
+    if(v >= 31) {
+        do {
+            v <<= 7;
+            r += 1;
+        } while (v);
+    }
+
+    return r;
+}
+
 size_t sasn1_compute_sizes(sasn1_t *value)
 {
     size_t index = 0, done = 0;

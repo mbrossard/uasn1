@@ -288,7 +288,25 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
                       | value->elements[index].tag) & 0xFF;
             w += 1;
         } else {
-            return SIZE_MAX;
+            uint8_t i = 0, j, max = (sizeof(size_t) / 7 + 1) * 8;
+            uint8_t buffer[max];
+            size_t t = value->elements[index].tag;
+
+            do {
+                buffer[i] = t & 0x7F;
+                i += 1;
+                t >>= 7;
+            } while(t);
+
+            ptr[w] = (value->elements[index]._class
+                      | value->elements[index].construct
+                      | 31) & 0xFF;
+            w += 1;
+
+            for(j = 0; j <= i; j++) {
+                ptr[w] = (((i == j) ? 0x0 : 0x80) | buffer[i - j]) & 0xFF;
+                w += 1;             
+            }
         }
 
         w += sasn1_encode_length(value->sizes[index], ptr + w, size - w);

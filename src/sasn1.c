@@ -141,6 +141,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
         while (!((ptr[read] == 0x0) && (ptr[read + 1] == 0x0))) {
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
+            if((r == SIZE_MAX) || ((read + r) > size)) {
+                return SIZE_MAX;
+            }
             read += r;
 
             if(previous != SIZE_MAX && child != SIZE_MAX) {

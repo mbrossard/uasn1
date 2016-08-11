@@ -131,17 +131,19 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         value->elements[i].tag = r;
     }
 
-    r = sasn1_decode_length(ptr + read, size - read, &length);
-    if(r == SIZE_MAX) {
-        return SIZE_MAX;
-    }
-    read += r;
 
     if(value->elements[i].construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
         value->elements[i].child = child;
         value->elements[i].count = 0;
+
+        r = sasn1_decode_length(ptr + read, size - read, &length);
+        if(r == SIZE_MAX) {
+            return SIZE_MAX;
+        }
+        read += r;
+        
         while(length > 0) {
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
             if(r == SIZE_MAX) {
@@ -160,6 +162,12 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             previous = child;
         }
     } else {
+        r = sasn1_decode_length(ptr + read, size - read, &length);
+        if(r == SIZE_MAX) {
+            return SIZE_MAX;
+        }
+        read += r;
+
         c = 0;
         if((value->elements[i]._class == uasn1_universal_tag) &&
            (value->elements[i].tag == uasn1_bit_string_type)) {

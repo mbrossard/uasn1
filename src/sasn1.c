@@ -131,8 +131,29 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         value->elements[i].tag = r;
     }
 
+    if(ptr[read] == 0x80) {
+        size_t previous = SIZE_MAX, child = SIZE_MAX;
+        value->elements[i].child = child;
+        value->elements[i].count = 0;
+        value->elements[i].flags = uasn1_indefinite_type;
 
-    if(value->elements[i].construct == uasn1_constructed_tag) {
+        read += 1;
+
+        while (!((ptr[read] == 0x0) && (ptr[read + 1] == 0x0))) {
+            r = sasn1_decode(value, ptr + read, size - read, i, &child);
+            read += r;
+
+            if(previous != SIZE_MAX && child != SIZE_MAX) {
+                value->elements[previous].sibling = child;
+                value->elements[i].count++;
+            } else {
+                value->elements[i].child = child;
+                value->elements[i].count = 1;
+            }
+            previous = child;
+        }
+        read += 2;
+    } else if(value->elements[i].construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
         value->elements[i].child = child;

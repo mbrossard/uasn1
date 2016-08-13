@@ -295,8 +295,12 @@ size_t sasn1_compute_sizes(sasn1_t *value)
                       (value->elements[index].tag == uasn1_bit_string_type)) ? 1 : 0);
             }
 
-            l += sasn1_length_length(value->sizes[index])
-                + sasn1_tag_size(value->elements[index].tag);
+            if(value->elements[index].flags == uasn1_indefinite_type) {
+                l = sasn1_tag_size(value->elements[index].tag) + 3;
+            } else {
+                l = sasn1_length_length(value->sizes[index])
+                    + sasn1_tag_size(value->elements[index].tag);
+            }
 
             if(index == 0) {
                 done = value->sizes[index] + l;

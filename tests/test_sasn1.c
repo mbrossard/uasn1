@@ -34,6 +34,8 @@ int main()
         "tests/rsa2_csr.der",
         "tests/rsa2_tsa_req.der",
         "tests/rsa2_tsa_res.der",
+        "tests/test_asn1.der",
+        "tests/tsa_ec_crt.der",
         "tests/tsa_rsa1_crt.der",
         "tests/tsa_rsa2_crt.der"
     };

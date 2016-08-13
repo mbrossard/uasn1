@@ -379,6 +379,11 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 
             while((value->elements[index].sibling == SIZE_MAX) && (index != 0)) {
                 index = value->elements[index].parent;
+                if(value->elements[index].flags == uasn1_indefinite_type) {
+                    ptr[w] = 0x0;
+                    ptr[w + 1] = 0x0;
+                    w += 2;
+                }
             }
 
             if(index != 0) {

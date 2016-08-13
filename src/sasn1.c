@@ -361,7 +361,8 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
             w += sasn1_encode_length(value->sizes[index], ptr + w, size - w);
         }
 
-        if((value->elements[index].construct == uasn1_constructed_tag) &&
+        if(((value->elements[index].construct == uasn1_constructed_tag) ||
+            (value->elements[index].flags == uasn1_indefinite_type)) &&
            (value->elements[index].child != SIZE_MAX)) {
             index = value->elements[index].child;
         } else {

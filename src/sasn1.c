@@ -131,6 +131,10 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         value->elements[i].tag = r;
     }
 
+    if(size <= read) {
+        return SIZE_MAX;
+    }
+
     if(ptr[read] == 0x80) {
         size_t previous = SIZE_MAX, child = SIZE_MAX;
         value->elements[i].child = child;

@@ -101,6 +101,9 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
     /* Allocate an entry and store its index */
     i = sasn1_allocate(value);
+    if (i == SIZE_MAX) {
+        return SIZE_MAX;
+    }
     if(index) {
         *index = i;
     }

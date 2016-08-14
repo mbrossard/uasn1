@@ -38,6 +38,11 @@ size_t sasn1_allocate(sasn1_t *value)
     if(index == value->size) {
         size_t s = value->size * sizeof(sasn1_element_t);
         sasn1_element_t *new = (sasn1_element_t *)malloc(2 * s);
+
+        if(new == NULL) {
+            return SIZE_MAX;
+        }
+        
         memcpy(new, value->elements, s);
         free(value->elements);
         value->elements = new;

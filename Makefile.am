@@ -25,7 +25,9 @@ libuasn1_a_SOURCES = src/uasn1.c \
 
 libsasn1_a_SOURCES = src/sasn1.c
 
-noinst_PROGRAMS = tests/test_asn1 \
+noinst_PROGRAMS = \
+	tests/sasn1_fuzzer \
+	tests/test_asn1 \
 	tests/test_base64 \
 	tests/test_cryptoki \
 	tests/test_sasn1

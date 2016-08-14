@@ -87,7 +87,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     size_t read = 0, r = 0, i, length = 0;
     
     if(ptr == NULL || size == 0) {
-        return 0;
+        return SIZE_MAX;
     }
 
     /* Read the first byte */

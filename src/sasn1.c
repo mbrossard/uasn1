@@ -183,8 +183,12 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             return SIZE_MAX;
         }
         read += r;
-        
-        while(length > 0) {
+
+        while (length > 0) {
+            if(read >= size) {
+                return SIZE_MAX;
+            }
+
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
             if(r == SIZE_MAX) {
                 return SIZE_MAX;

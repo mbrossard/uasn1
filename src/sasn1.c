@@ -107,13 +107,14 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
     memset(&(value->elements[i]), 0, sizeof(sasn1_t));
 
-    value->elements[i].parent        = parent;
-    value->elements[i].sibling       = SIZE_MAX;
-    value->elements[i].flags         = 0;
-    value->elements[i]._class        = c & uasn1_class_mask;
-    value->elements[i].construct     = (c & uasn1_constructed_tag) ?
+    value->elements[i].parent    = parent;
+    value->elements[i].sibling   = SIZE_MAX;
+    value->elements[i].flags     = 0;
+    value->elements[i]._class    = c & uasn1_class_mask;
+    value->elements[i].construct = (c & uasn1_constructed_tag) ?
         uasn1_constructed_tag : uasn1_primitive_tag;
-    value->elements[i].tag           = c & ~(uasn1_class_mask | uasn1_constructed_tag);
+    value->elements[i].tag       = c & ~(uasn1_class_mask | uasn1_constructed_tag);
+
     if(value->elements[i].tag == 31) {
         uint8_t j = 0, k = (sizeof(size_t) * 8) / 7;
         uint8_t m = 1 << (sizeof(size_t) * 8) % 7;

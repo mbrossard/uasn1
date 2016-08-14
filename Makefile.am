@@ -48,6 +48,10 @@ tests_test_cryptoki_SOURCES = \
 
 tests_test_cryptoki_LDADD = libuasn1.a
 
+tests_sasn1_fuzzer_SOURCES = \
+	tests/sasn1_fuzzer.c \
+	src/sasn1.c
+
 test: clean-local $(noinst_PROGRAMS)
 	./tests/test_asn1
 	./tests/test_base64

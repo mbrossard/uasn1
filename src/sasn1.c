@@ -114,6 +114,10 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         uint8_t m = 1 << (sizeof(size_t) * 8) % 7;
         r = 0;
         do {
+            if(size <= read) {
+                return SIZE_MAX;
+            }
+
             c = ptr[read];
             read += 1;
 

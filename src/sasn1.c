@@ -35,6 +35,10 @@ size_t sasn1_allocate(sasn1_t *value)
 {
     size_t index = value->count;
 
+    if((value == NULL) || (value->elements == NULL)) {
+        return SIZE_MAX;
+    }
+    
     if(index == value->size) {
         size_t s = value->size * sizeof(sasn1_element_t);
         sasn1_element_t *new = (sasn1_element_t *)malloc(2 * s);

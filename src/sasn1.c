@@ -383,7 +383,11 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
             ptr[w] = 0x80;
             w += 1;
         } else {
-            w += sasn1_encode_length(value->sizes[index], ptr + w, size - w);
+            size_t r = sasn1_encode_length(value->sizes[index], ptr + w, size - w);
+            if(r == SIZE_MAX) {
+                return SIZE_MAX;
+            }
+            w += r;
         }
 
         if(((value->elements[index].construct == uasn1_constructed_tag) ||

@@ -286,7 +286,7 @@ size_t sasn1_tag_size(size_t v)
 
     if(v >= 31) {
         do {
-            v <<= 7;
+            v >>= 7;
             r += 1;
         } while (v);
     }

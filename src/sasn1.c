@@ -402,7 +402,7 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
             }
 
             if (value->elements[index].construct == uasn1_primitive_tag) {
-                if(value->elements[index].size > (size - w)) {
+                if (size < (w + value->elements[index].size)) {
                     return SIZE_MAX;
                 }
                 memcpy(ptr + w, value->elements[index].ptr, value->elements[index].size);

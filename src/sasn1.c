@@ -38,7 +38,7 @@ size_t sasn1_allocate(sasn1_t *value)
     if((value == NULL) || (value->elements == NULL)) {
         return SIZE_MAX;
     }
-    
+
     if(index == value->size) {
         size_t s = value->size * sizeof(sasn1_element_t);
         sasn1_element_t *new = (sasn1_element_t *)malloc(2 * s);
@@ -46,7 +46,7 @@ size_t sasn1_allocate(sasn1_t *value)
         if(new == NULL) {
             return SIZE_MAX;
         }
-        
+
         memcpy(new, value->elements, s);
         free(value->elements);
         value->elements = new;
@@ -220,7 +220,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         }
     } else {
         r = sasn1_decode_length(ptr + read, size - read, &length);
-        if((r == SIZE_MAX) && (length > (size - read - r))) {
+        if((r == SIZE_MAX) || (length > (size - read - r))) {
             return SIZE_MAX;
         }
         read += r;

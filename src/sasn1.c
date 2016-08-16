@@ -368,6 +368,10 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
                 t >>= 7;
             } while(t);
 
+            if(size < (w + i + 1)) {
+                return SIZE_MAX;
+            }
+
             ptr[w] = (value->elements[index]._class
                       | value->elements[index].construct
                       | 31) & 0xFF;

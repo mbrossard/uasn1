@@ -353,6 +353,9 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
     
     do {
         if (value->elements[index].tag < 31) {
+            if (size < w + 1) {
+                return SIZE_MAX;
+            }
             ptr[w] = (value->elements[index]._class
                       | value->elements[index].construct
                       | value->elements[index].tag) & 0xFF;

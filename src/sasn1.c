@@ -346,11 +346,11 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 
     if (value->sizes == NULL) {
         size_t c = sasn1_compute_sizes(value);
-        if (c > size) {
+        if ((c == SIZE_MAX) || (c > size)) {
             return SIZE_MAX;
         }
     }
-    
+
     do {
         if (value->elements[index].tag < 31) {
             if (size < w + 1) {

@@ -387,6 +387,9 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
         }
 
         if (value->elements[index].flags == uasn1_indefinite_type) {
+            if (size < w + 3) {
+                return SIZE_MAX;
+            }
             ptr[w] = 0x80;
             w += 1;
         } else {

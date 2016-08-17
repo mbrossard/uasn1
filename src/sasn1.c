@@ -418,8 +418,8 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 
             while ((value->elements[index].sibling == SIZE_MAX) && (index != 0)) {
                 index = value->elements[index].parent;
-                if(value->elements[index].flags == uasn1_indefinite_type) {
-                    if(2 > (size - w)) {
+                if (value->elements[index].flags == uasn1_indefinite_type) {
+                    if (size < (w + 2)) {
                         return SIZE_MAX;
                     }
                     ptr[w] = 0x0;

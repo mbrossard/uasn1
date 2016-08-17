@@ -227,7 +227,10 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
         c = 0;
         if ((value->elements[i]._class == uasn1_universal_tag) &&
-           (value->elements[i].tag == uasn1_bit_string_type)) {
+            (value->elements[i].tag == uasn1_bit_string_type)) {
+            if(length == 0) {
+                return SIZE_MAX;
+            }
             /* In case of bit string, extract the first byte */
             c = ptr[read];
             read   += 1;

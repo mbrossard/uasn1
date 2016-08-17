@@ -323,8 +323,11 @@ size_t sasn1_compute_sizes(sasn1_t *value)
             if (value->elements[index].flags == uasn1_indefinite_type) {
                 l = sasn1_tag_size(value->elements[index].tag) + 3;
             } else {
-                l = sasn1_length_length(value->sizes[index])
-                    + sasn1_tag_size(value->elements[index].tag);
+                l = sasn1_length_length(value->sizes[index]);
+                if (l == SIZE_MAX) {
+                    return SIZE_MAX;
+                }
+                l += sasn1_tag_size(value->elements[index].tag);
             }
 
             if (index == 0) {

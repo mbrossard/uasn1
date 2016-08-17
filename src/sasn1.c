@@ -404,6 +404,9 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
         } else {
             if ((value->elements[index]._class == uasn1_universal_tag) &&
                 (value->elements[index].tag == uasn1_bit_string_type)) {
+                if (size < (w + 1)) {
+                    return SIZE_MAX;
+                }
                 ptr[w] = value->elements[index].extra & 0xFF;
                 w += 1;
             }

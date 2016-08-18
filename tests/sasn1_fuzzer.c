@@ -28,6 +28,10 @@ int main(int argc, char **argv)
     }
     sasn1_t *v = sasn1_new(16);
     r = sasn1_decode(v, input, l, SIZE_MAX, NULL);
+    if(r == SIZE_MAX) {
+        fprintf(stderr, "Decoding: error\n");
+        return 1;
+    }
     if(l != r) {
         fprintf(stderr, "Decoding: sizes do not match got %zu expected %zu\n", r, l);
         return 1;

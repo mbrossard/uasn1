@@ -36,7 +36,12 @@ int main(int argc, char **argv)
         fprintf(stderr, "Decoding: sizes do not match got %zu expected %zu\n", r, l);
         return 1;
     }
+
     r = sasn1_compute_sizes(v);
+    if(r == SIZE_MAX) {
+        fprintf(stderr, "Computing: error\n");
+        return 1;
+    }
     if(l != r) {
         fprintf(stderr, "Computing: sizes do not match got %zu expected %zu\n", r, l);
         return 1;

@@ -48,6 +48,10 @@ int main(int argc, char **argv)
     }
     
     r = sasn1_encode(v, output, sizeof(output));
+    if(r == SIZE_MAX) {
+        fprintf(stderr, "Encoding: error\n");
+        return 1;
+    }
     if(l != r) {
         fprintf(stderr, "Encoding: sizes do not match got %zu expected %zu\n", r, l);
         return 1;

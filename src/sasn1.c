@@ -71,12 +71,12 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
     if (c <= 127) {
         rv = c;
     } else {
-        if ((c - 128) > sizeof(size_t) || (c - 128) > (size - read)) {
+        size_t i, l = c - 128;
+        if (l > sizeof(size_t) || (size < (read + l))) {
             return SIZE_MAX;
         }
 
-        size_t i;
-        for (i = 0; i < (c - 128); i++) {
+        for (i = 0; i < l; i++) {
             rv = rv << 8;
             rv |= ptr[read + i];
         }

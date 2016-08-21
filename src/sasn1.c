@@ -77,7 +77,7 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
         }
 
         for (i = 0; i < l; i++) {
-            rv = rv << 8;
+            rv <<= 8;
             rv |= ptr[read + i];
         }
         read += i;

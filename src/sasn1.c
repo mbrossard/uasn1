@@ -7,7 +7,12 @@
 sasn1_t *sasn1_new(size_t size)
 {
     sasn1_t *r = malloc(sizeof(sasn1_t));
-    sasn1_element_t *e = malloc(size * sizeof(sasn1_element_t));
+    sasn1_element_t *e;
+
+    if(size < 16) {
+        size = 16;
+    }
+    e = malloc(size * sizeof(sasn1_element_t));
 
     if ((r != NULL) && (e != NULL)) {
         r->elements = e;

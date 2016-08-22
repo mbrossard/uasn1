@@ -13,6 +13,7 @@
 typedef struct {
     size_t parent;
     size_t sibling;
+    size_t length;
     union {
         struct {
             size_t child;

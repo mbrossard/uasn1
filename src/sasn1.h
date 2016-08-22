@@ -33,7 +33,6 @@ typedef struct {
 
 typedef struct {
     sasn1_element_t *elements;
-    size_t *sizes;
     size_t count;
     size_t size;
 } sasn1_t;

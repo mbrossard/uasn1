@@ -37,6 +37,12 @@ typedef struct {
     size_t size;
 } sasn1_t;
 
+/**
+ * @brief Allocate sasn1_t structure
+ * @param [in] size Initial size of buffer
+ * @return pointer to sasn1_t structure
+ * @return NULL in case of failure
+ */
 sasn1_t *sasn1_new(size_t size);
 void sasn1_free(sasn1_t *value);
 size_t sasn1_allocate(sasn1_t *value);

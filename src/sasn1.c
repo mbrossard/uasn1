@@ -51,6 +51,7 @@ size_t sasn1_allocate(sasn1_t *value)
         }
 
         memcpy(new, value->elements, s);
+        memset(new + s, 0, s);
         free(value->elements);
         value->elements = new;
         value->size *= 2;

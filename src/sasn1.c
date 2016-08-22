@@ -12,11 +12,10 @@ sasn1_t *sasn1_new(size_t size)
     if(size < 16) {
         size = 16;
     }
-    e = malloc(size * sizeof(sasn1_element_t));
+    e = calloc(size, sizeof(sasn1_element_t));
 
     if ((r != NULL) && (e != NULL)) {
         r->elements = e;
-        r->sizes = NULL;
         r->count = 0;
         r->size = size;
     } else {
@@ -31,7 +30,6 @@ void sasn1_free(sasn1_t *value)
 {
     if (value != NULL) {
         free(value->elements);
-        free(value->sizes);
         free(value);
     }
 }
@@ -306,24 +304,16 @@ size_t sasn1_compute_sizes(sasn1_t *value)
 {
     size_t index = 0, done = 0;
 
-    if (value->sizes) {
-        free(value->sizes);
-    }
-    value->sizes = calloc(value->count, sizeof(size_t));
-    if (!value->sizes) {
-        return SIZE_MAX;
-    }
-
     do {
         if (((value->elements[index].construct == uasn1_constructed_tag) ||
              (value->elements[index].flags == uasn1_indefinite_type)) &&
             (value->elements[index].child != SIZE_MAX) &&
-            (value->sizes[index] == 0)) {
+            (value->elements[index].length == 0)) {
             index = value->elements[index].child;
         } else {
             size_t l = 0;
             if (value->elements[index].construct == uasn1_primitive_tag) {
-                value->sizes[index] += value->elements[index].size +
+                value->elements[index].length += value->elements[index].size +
                     (((value->elements[index]._class == uasn1_universal_tag) &&
                       (value->elements[index].tag == uasn1_bit_string_type)) ? 1 : 0);
             }
@@ -331,7 +321,7 @@ size_t sasn1_compute_sizes(sasn1_t *value)
             if (value->elements[index].flags == uasn1_indefinite_type) {
                 l = sasn1_tag_size(value->elements[index].tag) + 3;
             } else {
-                l = sasn1_length_length(value->sizes[index]);
+                l = sasn1_length_length(value->elements[index].length);
                 if (l == SIZE_MAX) {
                     return SIZE_MAX;
                 }
@@ -339,9 +329,9 @@ size_t sasn1_compute_sizes(sasn1_t *value)
             }
 
             if (index == 0) {
-                done = value->sizes[index] + l;
+                done = value->elements[index].length + l;
             } else {
-                value->sizes[value->elements[index].parent] += value->sizes[index] + l;
+                value->elements[value->elements[index].parent].length += value->elements[index].length + l;
                 index = (value->elements[index].sibling == SIZE_MAX) ?
                     value->elements[index].parent : value->elements[index].sibling;
             }
@@ -355,7 +345,7 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 {
     size_t w = 0, index = 0;
 
-    if (value->sizes == NULL) {
+    if (value->elements[0].length == 0) {
         size_t c = sasn1_compute_sizes(value);
         if ((c == SIZE_MAX) || (c > size)) {
             return SIZE_MAX;
@@ -404,7 +394,7 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
             ptr[w] = 0x80;
             w += 1;
         } else {
-            size_t r = sasn1_encode_length(value->sizes[index], ptr + w, size - w);
+            size_t r = sasn1_encode_length(value->elements[index].length, ptr + w, size - w);
             if (r == SIZE_MAX) {
                 return SIZE_MAX;
             }

@@ -44,7 +44,19 @@ typedef struct {
  * @return NULL in case of failure
  */
 sasn1_t *sasn1_new(size_t size);
+
+/**
+ * @brief Free sasn1_t structure
+ * @param [in] value pointer to sasn1_t structure
+ */
 void sasn1_free(sasn1_t *value);
+
+/**
+ * @brief Allocate an entry in sasn1_t structure
+ * @param [in] value pointer to sasn1_t structure
+ * @return index of allocated entry
+ * @return @c SIZE_MAX otherwise
+ */
 size_t sasn1_allocate(sasn1_t *value);
 size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length);
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, size_t *index);

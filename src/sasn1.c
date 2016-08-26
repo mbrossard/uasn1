@@ -178,17 +178,20 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
     }
 
     if (ptr[read] == 0x80) {
+        /* This is a BER indefinite length encoding  */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
+
+        read += 1;
         value->elements[i].child = child;
         value->elements[i].count = 0;
         value->elements[i].flags = uasn1_indefinite_type;
 
-        read += 1;
-
+        /* Check there is at least enough bytes for end marker */
         if (size < (read + 2)) {
             return SIZE_MAX;
         }
 
+        /* The end marker is two consecutive 0x0 bytes */
         while (!((ptr[read] == 0x0) && (ptr[read + 1] == 0x0))) {
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
             if ((r == SIZE_MAX) || (size < (read + r))) {
@@ -209,6 +212,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
                 return SIZE_MAX;
             }
         }
+        /* Increment for end marker */
         read += 2;
     } else if (value->elements[i].construct == uasn1_constructed_tag) {
         /* This is a sequence or a set */

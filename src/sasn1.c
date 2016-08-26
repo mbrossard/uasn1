@@ -215,17 +215,20 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         /* Increment for end marker */
         read += 2;
     } else if (value->elements[i].construct == uasn1_constructed_tag) {
-        /* This is a sequence or a set */
+        /* This is a constructed element (sequence or a set) */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
+
         value->elements[i].child = child;
         value->elements[i].count = 0;
 
+        /* Read the length of the content */
         r = sasn1_decode_length(ptr + read, size - read, &length);
         if ((r == SIZE_MAX) || (size < (read + r + length))) {
             return SIZE_MAX;
         }
         read += r;
 
+        /* Add elements until we've read length bytes */
         while (length > 0) {
             if (read >= size) {
                 return SIZE_MAX;

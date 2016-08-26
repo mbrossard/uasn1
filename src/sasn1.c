@@ -14,6 +14,7 @@ sasn1_t *sasn1_new(size_t size)
     }
     e = calloc(size, sizeof(sasn1_element_t));
 
+    /* Check both allocations succeeded */
     if ((r != NULL) && (e != NULL)) {
         r->elements = e;
         r->count = 0;
@@ -42,7 +43,9 @@ size_t sasn1_allocate(sasn1_t *value)
         return SIZE_MAX;
     }
 
+    /* Check if the buffer is full */
     if (index == value->size) {
+        /* Re-allocate a buffer with double the size */
         size_t s = value->size * sizeof(sasn1_element_t);
         sasn1_element_t *new = (sasn1_element_t *)malloc(2 * s);
 

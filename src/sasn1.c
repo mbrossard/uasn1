@@ -53,9 +53,13 @@ size_t sasn1_allocate(sasn1_t *value)
             return SIZE_MAX;
         }
 
+        /* Copy existing values */
         memcpy(new, value->elements, s);
+        /* Fill the rest with zeros */
         memset(((char *)new) + s, 0, s);
+        /* Free older array */
         free(value->elements);
+        /* Update */
         value->elements = new;
         value->size *= 2;
     }
@@ -72,13 +76,17 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
         return SIZE_MAX;
     }
 
+    /* Read the first byte */
     c = ptr[read];
     read += 1;
 
     if (c <= 127) {
+        /* Small length case */
         rv = c;
     } else {
+        /* Long length case: l is the number of bytes to encode length */
         size_t i, l = c - 128;
+
         if (l > sizeof(size_t) || (size < (read + l))) {
             return SIZE_MAX;
         }

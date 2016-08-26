@@ -235,7 +235,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             }
 
             r = sasn1_decode(value, ptr + read, size - read, i, &child);
-            if (r == SIZE_MAX) {
+            if ((r == SIZE_MAX) || (r > length)) {
                 return SIZE_MAX;
             }
             read += r;

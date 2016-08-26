@@ -91,11 +91,12 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length)
             return SIZE_MAX;
         }
 
+        /* Load big endian number of l bytes */
         for (i = 0; i < l; i++) {
             rv <<= 8;
             rv |= ptr[read + i];
         }
-        read += i;
+        read += l;
     }
 
     if (length) {

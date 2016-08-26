@@ -185,7 +185,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
         read += 1;
 
-        if ((size - read) < 2) {
+        if (size < (read + 2)) {
             return SIZE_MAX;
         }
 
@@ -205,7 +205,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             }
             previous = child;
 
-            if ((size - read) < 2) {
+            if (size < (read + 2)) {
                 return SIZE_MAX;
             }
         }

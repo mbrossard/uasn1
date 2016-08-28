@@ -110,7 +110,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 {
     uint8_t c;
     size_t read = 0, r = 0, i, length = 0;
-    
+
     if (ptr == NULL || size == 0) {
         return SIZE_MAX;
     }
@@ -275,7 +275,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         value->elements[i].extra = c;
         read += length;
     }
-    
+
     return read;
 }
 
@@ -413,7 +413,7 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
 
             for (j = 0; j <= i; j++) {
                 ptr[w] = (((i == j) ? 0x0 : 0x80) | buffer[i - j]) & 0xFF;
-                w += 1;             
+                w += 1;
             }
         }
 

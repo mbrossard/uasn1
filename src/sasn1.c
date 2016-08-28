@@ -140,10 +140,10 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
     if (value->elements[i].tag == 31) {
         /*
-          Special case for large value tags: they are encoded in
-          chunks of 7 bits using a MSB set to 0 as a terminator. We
-          try to support all values that would fit into size_t.
-        */
+         * Special case for large value tags: they are encoded in
+         * chunks of 7 bits using a MSB set to 0 as a terminator. We
+         * try to support all values that would fit into size_t.
+         */
         uint8_t j = 0, k = (sizeof(size_t) * 8) / 7;
         uint8_t m = 1 << ((sizeof(size_t) * 8) % 7);
         r = 0;
@@ -172,6 +172,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         value->elements[i].tag = r;
     }
 
+    /* Check we have at least one byte left  */
     if (size < (read + 1)) {
         return SIZE_MAX;
     }
@@ -251,6 +252,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             previous = child;
         }
     } else {
+        /* Read the length */
         r = sasn1_decode_length(ptr + read, size - read, &length);
         if ((r == SIZE_MAX) || (size < (read + r + length))) {
             return SIZE_MAX;

@@ -177,13 +177,16 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
         return SIZE_MAX;
     }
 
+    /* Peak into the next byte */
     if (ptr[read] == 0x80) {
         /* This is a BER indefinite length encoding  */
         size_t previous = SIZE_MAX, child = SIZE_MAX;
 
+        /* Go past the indefinite length encoding marker (0x80) */
         read += 1;
-        value->elements[i].child = child;
+
         value->elements[i].count = 0;
+        value->elements[i].child = child;
         value->elements[i].flags = uasn1_indefinite_type;
 
         /* Check there is at least enough bytes for end marker */

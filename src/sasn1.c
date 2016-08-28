@@ -223,7 +223,8 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
 
         /* Read the length of the content */
         r = sasn1_decode_length(ptr + read, size - read, &length);
-        if ((r == SIZE_MAX) || (size < (read + r + length))) {
+        if ((r == SIZE_MAX) || (size < (read + r + length))
+            || ((read + r + length) < read)) { /* Overflow check */
             return SIZE_MAX;
         }
         read += r;

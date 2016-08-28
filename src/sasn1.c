@@ -145,7 +145,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
           try to support all values that would fit into size_t.
         */
         uint8_t j = 0, k = (sizeof(size_t) * 8) / 7;
-        uint8_t m = 1 << (sizeof(size_t) * 8) % 7;
+        uint8_t m = 1 << ((sizeof(size_t) * 8) % 7);
         r = 0;
         do {
             if (size < (read + 1)) {

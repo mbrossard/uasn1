@@ -157,8 +157,7 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, si
             read += 1;
 
             /* Concatenate the last 7 bits */
-            r <<= 7;
-            r |= c & 0x7F;
+            r = (r << 7) | (c & 0x7F);
 
             /* Special case if the first byte value is small enough */
             if ((j == 0) && ((c & 0x7F) < m)) {

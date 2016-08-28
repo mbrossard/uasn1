@@ -58,6 +58,15 @@ void sasn1_free(sasn1_t *value);
  * @return @c SIZE_MAX otherwise
  */
 size_t sasn1_allocate(sasn1_t *value);
+
+/**
+ * @brief Decode length ASN.1 element length
+ * @param [in] ptr value pointer to data
+ * @param [in] size maximum length of data to parse
+ * @param [out] length pointer to store length
+ * @return number of bytes read
+ * @return @c SIZE_MAX otherwise
+ */
 size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length);
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size, size_t parent, size_t *index);
 size_t sasn1_compute_sizes(sasn1_t *value);

@@ -81,6 +81,13 @@ size_t sasn1_decode_length(uint8_t *ptr, size_t size, size_t *length);
  */
 size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size,
                     size_t parent, size_t *index);
+
+/**
+ * @brief Compute the size of the elements in sasn1_t structure
+ * @param [in] value pointer to sasn1_t structure
+ * @return total size of the encoding of value will occupy
+ * @return @c SIZE_MAX in case of error
+ */
 size_t sasn1_compute_sizes(sasn1_t *value);
 size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size);
 

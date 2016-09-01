@@ -400,6 +400,7 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
             uint8_t buffer[max];
             size_t t = value->elements[index].tag;
 
+            /* Split tag value into 7-bit elements */
             do {
                 buffer[i] = t & 0x7F;
                 i += 1;
@@ -410,12 +411,15 @@ size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size)
                 return SIZE_MAX;
             }
 
+            /* Encode first byte */
             ptr[w] = (value->elements[index]._class
                       | value->elements[index].construct
                       | 31) & 0xFF;
             w += 1;
 
+            /* Output all 7-bit elements in reverse order */
             for (j = 0; j <= i; j++) {
+                /* Set MSB except for last */
                 ptr[w] = (((i == j) ? 0x0 : 0x80) | buffer[i - j]) & 0xFF;
                 w += 1;
             }

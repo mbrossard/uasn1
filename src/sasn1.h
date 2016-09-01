@@ -89,6 +89,15 @@ size_t sasn1_decode(sasn1_t *value, uint8_t *ptr, size_t size,
  * @return @c SIZE_MAX in case of error
  */
 size_t sasn1_compute_sizes(sasn1_t *value);
+
+/**
+ * @brief Encode ASN.1 structure to buffer
+ * @param [in] value pointer to sasn1_t structure
+ * @param [out] ptr value pointer to buffer
+ * @param [in] size buffer length
+ * @return number of bytes written
+ * @return @c SIZE_MAX in case of error
+ */
 size_t sasn1_encode(sasn1_t *value, uint8_t *ptr, size_t size);
 
 #endif

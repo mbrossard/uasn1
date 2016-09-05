@@ -31,9 +31,21 @@ typedef struct {
     uint8_t extra;
 } sasn1_element_t;
 
+/**
+ * Top-level structure
+ */
 typedef struct {
+    /**
+     * Buffer containing ASN.1 elements
+     */
     sasn1_element_t *elements;
+    /**
+     * Count of elements used
+     */
     size_t count;
+    /**
+     * Size of allocated buffer (in number of elements)
+     */
     size_t size;
 } sasn1_t;
 

@@ -11,16 +11,37 @@
  */
 
 typedef struct {
+    /**
+     * Index of parent element
+     */
     size_t parent;
+    /**
+     * Index of next element
+     */
     size_t sibling;
+    /**
+     * Length in bytes of encoded subtree
+     */
     size_t length;
     union {
         struct {
+            /**
+             * Index of first sub-element
+             */
             size_t child;
+            /**
+             * Count of sub-elements
+             */
             size_t count;
         };
         struct {
+            /**
+             * Pointer to content
+             */
             uint8_t *ptr;
+            /**
+             * Size of data
+             */
             size_t size;
         };
     };

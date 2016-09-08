@@ -24,6 +24,9 @@ typedef struct {
      */
     size_t length;
     union {
+        /**
+         * In case of constructed element
+         */
         struct {
             /**
              * Index of first sub-element
@@ -34,6 +37,9 @@ typedef struct {
              */
             size_t count;
         };
+        /**
+         * In case of scalar element
+         */
         struct {
             /**
              * Pointer to content
